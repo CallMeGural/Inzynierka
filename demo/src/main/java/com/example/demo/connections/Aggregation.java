@@ -1,5 +1,6 @@
 package com.example.demo.connections;
 
+import com.example.demo.Data;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.paint.Color;
@@ -15,7 +16,7 @@ public class Aggregation extends Dependency {
 
     protected final double AGGREGATION_ANGLE = Math.toRadians(30);
     protected Polygon diamond = new Polygon();
-    public Aggregation(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2){
+    public Aggregation(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data){
         this.x1.bind(x1);
         this.y1.bind(y1);
         this.x2.bind(x2);
@@ -30,6 +31,7 @@ public class Aggregation extends Dependency {
             s.addListener( (l,o,n) -> update() );
         }
         update();
+        pickConnection(data);
     }
 
 

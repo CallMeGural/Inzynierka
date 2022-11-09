@@ -35,7 +35,6 @@ public class ObjectDetailController {
             //Class
             TextField textField = (TextField) vBox.getChildren().get(0);
             data.entityList.get(pickedId).getVbox().getChildren().addAll(
-                    //vBox.getChildren()
                     new Label(textField.getText()),
                     vBox.getChildren().get(1),
                     vBox.getChildren().get(2),
@@ -47,7 +46,6 @@ public class ObjectDetailController {
             TextField textField = (TextField) vBox.getChildren().get(1);
             data.entityList.get(pickedId).getVbox().getChildren().addAll(
                     vBox.getChildren().get(0),
-                    //vBox.getChildren()
                     new Label(textField.getText()),
                     vBox.getChildren().get(2),
                     vBox.getChildren().get(3),

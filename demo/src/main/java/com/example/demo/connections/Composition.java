@@ -1,12 +1,13 @@
 package com.example.demo.connections;
 
+import com.example.demo.Data;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.paint.Color;
 
-public class Composition extends Aggregation{
+public class Composition extends Aggregation {
 
-    public Composition(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2){
-        super(x1,y1,x2,y2);
+    public Composition(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data){
+        super(x1,y1,x2,y2,data);
         diamond.setFill(Color.BLACK);
     }
 

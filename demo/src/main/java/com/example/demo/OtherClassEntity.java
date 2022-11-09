@@ -45,19 +45,7 @@ public class OtherClassEntity extends ClassEntity {
                         ex.printStackTrace();
                     }
                 }
-                else {
-                    singleClickEvent(data);
-//                    data.pickedPair.add(this);
-//                    vbox.setStyle("-fx-border-color: blue");
-//                    if(data.pickedPair.size()>2) {
-//                        for(ClassEntity entity : data.pickedPair) {
-//                            entity.getVbox().setStyle("-fx-border-color: black");
-//                        }
-//                        data.pickedPair.clear();
-//
-//                    }
-//                    System.out.println(data.pickedPair);
-                }
+                else singleClickEvent(data);
             }
         });
     }

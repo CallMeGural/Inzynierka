@@ -19,6 +19,7 @@ public class SaveData {
     private TextArea textArea;
     private int classCounter = 0;
     private int otherCounter = 0;
+    private int connectionCounter = 0;
 
     public String setFileName() {
         TextInputDialog dialog = new TextInputDialog("file");
@@ -30,61 +31,76 @@ public class SaveData {
 
     public void saveClassEntity(VBox vBox, Ini ini) {
         label = (Label) vBox.getChildren().get(0); //name
-        ini.put("class"+classCounter,"name", label.getText());
+        ini.put("class" + classCounter, "name", label.getText());
 
-        ini.put("class"+classCounter,"layoutX", vBox.getLayoutX());
-        ini.put("class"+classCounter,"layoutY", vBox.getLayoutY());
+        ini.put("class" + classCounter, "layoutX", vBox.getLayoutX());
+        ini.put("class" + classCounter, "layoutY", vBox.getLayoutY());
 
         textArea = (TextArea) vBox.getChildren().get(2); //vars
-        ini.put("class"+classCounter,"vars", textArea.getText());
+        ini.put("class" + classCounter, "vars", textArea.getText());
 
         textArea = (TextArea) vBox.getChildren().get(4); //vars
-        ini.put("class"+classCounter,"vars", textArea.getText());
+        ini.put("class" + classCounter, "vars", textArea.getText());
     }
 
-    public void saveOtherClassEntity(VBox vBox,Ini ini) {
+    public void saveOtherClassEntity(VBox vBox, Ini ini) {
         label = (Label) vBox.getChildren().get(0); //type
-        ini.put("other"+otherCounter,"type", label.getText());
+        ini.put("other" + otherCounter, "type", label.getText());
         label = (Label) vBox.getChildren().get(1); //name
-        ini.put("other"+otherCounter,"name", label.getText());
+        ini.put("other" + otherCounter, "name", label.getText());
 
-        ini.put("other"+otherCounter,"layoutX", vBox.getLayoutX());
-        ini.put("other"+otherCounter,"layoutY", vBox.getLayoutY());
+        ini.put("other" + otherCounter, "layoutX", vBox.getLayoutX());
+        ini.put("other" + otherCounter, "layoutY", vBox.getLayoutY());
 
         textArea = (TextArea) vBox.getChildren().get(3); //vars
-        ini.put("other"+otherCounter,"vars", textArea.getText());
+        ini.put("other" + otherCounter, "vars", textArea.getText());
 
         textArea = (TextArea) vBox.getChildren().get(5); //methods
-        ini.put("other"+otherCounter,"meths", textArea.getText());
+        ini.put("other" + otherCounter, "meths", textArea.getText());
+    }
+
+    public void saveConnection(ConnectedPair pair, Ini ini) {
+        ini.put("connection" + connectionCounter, "vbox1", pair.getVBox1().getId());
+        ini.put("connection" + connectionCounter, "vbox2", pair.getVBox2().getId());
+        ini.put("connection" + connectionCounter, "type", pair.getConnection().getClass().getName());
     }
 
     public void save(MainViewController controller) throws IOException {
-        VBox vBox;
-        String filename = setFileName()+".ini";
+        VBox vBox = new VBox();
+        String filename = setFileName() + ".ini";
         File file = new File(filename);
-        if(file.createNewFile()) {
+        if (file.createNewFile()) {
             Wini ini = new Wini(file);
-            for(int i=0;i<controller.pane.getChildren().size();i++) {
-                vBox = (VBox) controller.pane.getChildren().get(i);
-
+            //for(int i=0;i<controller.pane.getChildren().size();i++) {
+            for (int i=0;i<controller.data.entityList.size();i++) {
+                //vBox = (VBox) controller.pane.getChildren().get(i);
+                vBox = controller.data.entityList.get(i).getVbox();
                 if (vBox.getChildren().size() == 5) { //ClassEntity
 
-                    saveClassEntity(vBox,ini);
+                    saveClassEntity(vBox, ini);
                     classCounter++;
-                }
-                else { //OtherClassEntity
+                } else if (vBox.getChildren().size() == 6) { //OtherClassEntity
 
-                    saveOtherClassEntity(vBox,ini);
+                    saveOtherClassEntity(vBox, ini);
                     otherCounter++;
+
                 }
             }
-            ini.put("config","classCounter", classCounter);
-            ini.put("config","otherCounter",otherCounter);
-            ini.store();
+        for (ConnectedPair pair : controller.data.connectedPairs) {
+            saveConnection(pair, ini);
+            connectionCounter++;
+        }
+        ini.put("config", "classCounter", classCounter);
+        ini.put("config", "otherCounter", otherCounter);
+        ini.put("config", "connectionCounter", connectionCounter);
+        ini.store();
         }
         else System.out.println("NIE UTWORZONO PLIKU");
-
     }
+
+
+
+
 
     public void loadClassEntity(int i, Ini ini, Ini.Section section, ClassEntity entity, MainViewController controller) {
         section = ini.get("class"+i);
@@ -115,6 +131,19 @@ public class SaveData {
         }
     }
 
+    public void loadConnection(int i, Ini ini, Ini.Section section, MainViewController controller) {
+        String path = "";
+        section = ini.get("connection"+i);
+        switch (section.get("type")) {
+            case "com.example.demo.connections.Aggregation" -> controller.drawAggregation(section.get("vbox1"),section.get("vbox2"));
+            case "com.example.demo.connections.Association" -> controller.drawAssociation(section.get("vbox1"),section.get("vbox2"));
+            case "com.example.demo.connections.Composition" -> controller.drawComposition(section.get("vbox1"),section.get("vbox2"));
+            case "com.example.demo.connections.Dependency" -> controller.drawDependency(section.get("vbox1"),section.get("vbox2"));
+            case "com.example.demo.connections.Inheritance" -> controller.drawInheritance(section.get("vbox1"),section.get("vbox2"));
+            case "com.example.demo.connections.Realization" -> controller.drawRealization(section.get("vbox1"),section.get("vbox2"));
+        }
+    }
+
     public void load(MainViewController controller, Data data) throws IOException {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Ini file (*.ini)","*.ini");
@@ -124,7 +153,12 @@ public class SaveData {
         if(file!=null) {
             data.pickedPair.clear();
             data.entityList.clear();
+            data.connectedPairs.clear();
             controller.pane.getChildren().clear();
+
+            ClassEntity entity = new ClassEntity();
+            OtherClassEntity otherEntity = new OtherClassEntity(new Label(),OtherClassType.PRIMITIVE);
+
 
             Ini ini = new Ini();
             Ini.Section section;
@@ -132,14 +166,16 @@ public class SaveData {
             section = ini.get("config");
             classCounter = Integer.parseInt(section.get("classCounter"));
             otherCounter = Integer.parseInt(section.get("otherCounter"));
+            connectionCounter = Integer.parseInt(section.get("connectionCounter"));
 
             for(int i=0;i<classCounter;i++) {
-                ClassEntity entity = new ClassEntity();
                 loadClassEntity(i,ini,section,entity,controller);
             }
             for(int i=0;i<otherCounter;i++) {
-                OtherClassEntity otherEntity = new OtherClassEntity(new Label(),OtherClassType.PRIMITIVE);
                 loadOtherClassEntity(i,ini,section,otherEntity,controller);
+            }
+            for(int i=0;i<connectionCounter;i++) {
+                loadConnection(i,ini,section,controller);
             }
         }
     }

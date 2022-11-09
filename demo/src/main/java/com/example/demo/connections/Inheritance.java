@@ -1,5 +1,6 @@
 package com.example.demo.connections;
 
+import com.example.demo.Data;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.paint.Color;
@@ -14,7 +15,7 @@ public class Inheritance extends Dependency {
 
     protected Polygon triangle = new Polygon();
 
-    public Inheritance(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2){
+    public Inheritance(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data){
         super();
         this.x1.bind(x1);
         this.y1.bind(y1);
@@ -28,7 +29,7 @@ public class Inheritance extends Dependency {
             s.addListener( (l,o,n) -> update() );
         }
         update();
-
+        pickConnection(data);
 
     }
 

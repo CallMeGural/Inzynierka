@@ -21,7 +21,8 @@ public class Center {
             });
         }
 
-        private void calcCenter(Bounds bounds) {
+
+    private void calcCenter(Bounds bounds) {
             centerX.set(bounds.getMinX() + bounds.getWidth()  / 2);
             centerY.set(bounds.getMinY() + bounds.getHeight() / 2);
         }
