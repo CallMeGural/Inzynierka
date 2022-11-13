@@ -9,11 +9,14 @@ import lombok.Setter;
 @Setter
 public class ConnectedPair {
     private VBox vBox1, vBox2;
+    private String cardinality1, cardinality2;
     private Group connection;
 
     public ConnectedPair(VBox vBox1, VBox vBox2, Group connection) {
         this.vBox1 = vBox1;
         this.vBox2 = vBox2;
         this.connection = connection;
+        this.cardinality1="not specified";
+        this.cardinality2="not specified";
     }
 }

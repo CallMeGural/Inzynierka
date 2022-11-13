@@ -13,12 +13,8 @@ public class Center {
 
     public Center(Node node) {
         calcCenter(node.getBoundsInParent());
-        node.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
-            @Override
-            public void changed(ObservableValue<? extends Bounds> observableValue, Bounds oldBounds, Bounds bounds) {
-                calcCenter(bounds);
-            }
-        });
+        node.boundsInParentProperty().addListener(
+                (observableValue, oldBounds, bounds) -> calcCenter(bounds));
     }
 
 

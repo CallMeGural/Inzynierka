@@ -7,6 +7,7 @@ import javafx.scene.shape.Polygon;
 import lombok.Getter;
 import lombok.Setter;
 import pl.gf.umlcd.Data;
+import pl.gf.umlcd.MainViewController;
 
 
 @Getter
@@ -15,8 +16,8 @@ public class Inheritance extends Dependency {
 
     protected Polygon triangle = new Polygon();
 
-    public Inheritance(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data){
-        super();
+    public Inheritance(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data, MainViewController controller){
+        this.setId("conn"+counter);
         this.x1.bind(x1);
         this.y1.bind(y1);
         this.x2.bind(x2);
@@ -29,7 +30,11 @@ public class Inheritance extends Dependency {
             s.addListener( (l,o,n) -> update() );
         }
         update();
-        pickConnection(data);
+        doubleClickEvent(controller,data);
+        counter++;
+    }
+
+    public Inheritance() {
 
     }
 
