@@ -94,10 +94,12 @@ public class Association extends Group {
 
 
     public void showConnection(Data data, String id, ConnectionViewController controller) {
+        System.out.println("connection id " +id);
         //odnalezienie odpowiedniego polaczenia w liscie
         for(int i = 0; i<data.connectedPairs.size(); i++) {
             if(data.connectedPairs.get(i).getConnection().getId().equals(id)) {
                 controller.connectionId=i;
+                System.out.println(data.connectedPairs.get(i));
                 break;
             }
         }

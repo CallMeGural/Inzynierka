@@ -409,38 +409,35 @@ public class MainViewController implements Initializable {
         try {
             Parent root = loader.load();
             ConnectionViewController controller = loader.getController();
-//            Association connection = (Association) e.getSource();
-//            String connectionId = connection.getId();
-//            String connectionClass = connectionId.getClass().getSimpleName();
             String connectionId;
             switch (e.getSource().getClass().getSimpleName()) {
                 case "Association" -> {
-                    Association association = new Association();
+                    Association association = (Association) e.getSource();
                     connectionId = association.getId();
                     association.showConnection(data,connectionId,controller);
                 }
                 case "Aggregation" -> {
-                    Aggregation aggregation = new Aggregation();
+                    Aggregation aggregation = (Aggregation) e.getSource();
                     connectionId = aggregation.getId();
                     aggregation.showConnection(data,connectionId,controller);
                 }
                 case "Composition" -> {
-                    Composition composition = new Composition();
+                    Composition composition = (Composition) e.getSource();
                     connectionId = composition.getId();
                     composition.showConnection(data,connectionId,controller);
                 }
                 case "Dependency" -> {
-                    Dependency dependency = new Dependency();
+                    Dependency dependency = (Dependency) e.getSource();
                     connectionId = dependency.getId();
                     dependency.showConnection(data,connectionId,controller);
                 }
                 case "Inheritance" -> {
-                    Inheritance inheritance = new Inheritance();
+                    Inheritance inheritance = (Inheritance) e.getSource();
                     connectionId = inheritance.getId();
                     inheritance.showConnection(data,connectionId,controller);
                 }
                 case "Realization" -> {
-                    Realization realization = new Realization();
+                    Realization realization = (Realization) e.getSource();
                     connectionId = realization.getId();
                     realization.showConnection(data,connectionId,controller);
                 }
