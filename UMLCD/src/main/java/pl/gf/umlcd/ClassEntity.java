@@ -16,8 +16,8 @@ public class ClassEntity {
 
     protected VBox vbox;
     protected Label name;
-    protected final Label variablesLab;
-    protected final Label methodsLab;
+    protected Label variablesLab;
+    protected Label methodsLab;
     protected TextArea vars;
     protected TextArea meths;
     protected static int counter = 0;
@@ -33,15 +33,17 @@ public class ClassEntity {
         this.vars = new TextArea();
         this.meths = new TextArea();
 
-        vbox.setId("vbox"+counter);
+        vbox.setId("class"+counter);
         vbox.setPrefSize(WIDTH,HEIGHT);
         vbox.setStyle("-fx-border-style: solid");
         System.out.println(vbox.getId());
-        counter++;
+
+        System.out.println("Tworze obiekt ClassEntity");
     }
 
     //przypisuje do VBoxa odpowiednie labelki i textfieldy
     protected void setNodesToVBox(){
+        counter++;
         vbox.getChildren().addAll(name,variablesLab,vars,methodsLab,meths);
         System.out.println("VBox "+vbox.getId()+" prepared");
         vbox.setAlignment(Pos.CENTER);

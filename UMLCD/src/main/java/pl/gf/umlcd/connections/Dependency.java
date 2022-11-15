@@ -2,24 +2,31 @@ package pl.gf.umlcd.connections;
 
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.Group;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polyline;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.gf.umlcd.ConnectionViewController;
 import pl.gf.umlcd.Data;
+import pl.gf.umlcd.MainViewController;
 
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class Dependency extends Association {
+public class Dependency extends /*Group*/Association {
 
     protected Polyline head = new Polyline();
     protected final double ARROWHEAD_ANGLE = Math.toRadians(40);
     protected final double ARROWHEAD_LENGTH = 10;
+    //protected static int counter=0;
 
-    public Dependency(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2,Data data){
+    public Dependency(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data, MainViewController controller){
+        this.setId("conn"+counter);
         this.x1.bind(x1);
         this.y1.bind(y1);
         this.x2.bind(x2);
@@ -32,7 +39,8 @@ public class Dependency extends Association {
         }
         mainLine.getStrokeDashArray().setAll(10.0, 5.0);
         update();
-        pickConnection(data);
+        doubleClickEvent(controller,data);
+        counter++;
     }
 
     @Override
@@ -63,10 +71,8 @@ public class Dependency extends Association {
         head.getPoints().addAll(x,y);
 
     }
-
     @Override
-    public void pickConnection(Data data) {
-        this.setOnMouseClicked(e -> {
+    public void singleClickEvent(Data data) {
             data.pickedConnection = this;
             if(!(this.getHead().getStroke() == Color.BLUE))  {
                 this.getHead().setStroke(Color.BLUE);
@@ -77,7 +83,5 @@ public class Dependency extends Association {
                 this.getMainLine().setStroke(Color.BLACK);
             }
 
-        });
     }
-
 }

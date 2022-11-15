@@ -1,8 +1,8 @@
 package pl.gf.umlcd;
 
+import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
-import javafx.stage.StageStyle;
 import pl.gf.umlcd.connections.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -20,6 +20,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
@@ -111,7 +112,7 @@ public class MainViewController implements Initializable {
     }
 
     public void showClassEntity(MouseEvent e) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("detail-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("class-view.fxml"));
         try {
             Parent root = loader.load();
             ObjectDetailController controller = loader.getController();
@@ -154,7 +155,7 @@ public class MainViewController implements Initializable {
     }
 
     public void showOtherEntity(MouseEvent e) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("detail-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("class-view.fxml"));
         try {
             Parent root = loader.load();
             ObjectDetailController controller = loader.getController();
@@ -185,7 +186,7 @@ public class MainViewController implements Initializable {
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
                     endCenter.centerXProperty(),
-                    endCenter.centerYProperty(),data);
+                    endCenter.centerYProperty(),data, this);
             pane.getChildren().add(association);
             data.connectedPairs.add(new ConnectedPair(
                     data.pickedPair.get(0).getVbox(),
@@ -196,7 +197,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawAssociation(String vbox1, String vbox2) {
+    public void drawAssociation(String vbox1, String vbox2, String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -206,10 +207,10 @@ public class MainViewController implements Initializable {
                 startCenter.centerXProperty(),
                 startCenter.centerYProperty(),
                 endCenter.centerXProperty(),
-                endCenter.centerYProperty(),data);
+                endCenter.centerYProperty(),data, this);
 
         pane.getChildren().add(association);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, association));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, association,startCardinality,endCardinality));
     }
 
     public void drawDependency(ActionEvent e) {
@@ -220,7 +221,7 @@ public class MainViewController implements Initializable {
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
                     endCenter.centerXProperty(),
-                    endCenter.centerYProperty(),data);
+                    endCenter.centerYProperty(),data,this);
 
             pane.getChildren().add(dependency);
             data.connectedPairs.add(new ConnectedPair(
@@ -232,7 +233,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawDependency(String vbox1, String vbox2) {
+    public void drawDependency(String vbox1, String vbox2, String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -242,10 +243,10 @@ public class MainViewController implements Initializable {
                 startCenter.centerXProperty(),
                 startCenter.centerYProperty(),
                 endCenter.centerXProperty(),
-                endCenter.centerYProperty(),data);
+                endCenter.centerYProperty(),data,this);
 
         pane.getChildren().add(dependency);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, dependency));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, dependency,startCardinality,endCardinality));
     }
 
     public void drawInheritance() {
@@ -256,7 +257,7 @@ public class MainViewController implements Initializable {
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
                     endCenter.centerXProperty(),
-                    endCenter.centerYProperty(),data);
+                    endCenter.centerYProperty(),data,this);
 
             pane.getChildren().add(inheritance);
             data.connectedPairs.add(new ConnectedPair(
@@ -268,7 +269,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawInheritance(String vbox1, String vbox2) {
+    public void drawInheritance(String vbox1, String vbox2,String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -278,10 +279,10 @@ public class MainViewController implements Initializable {
                 startCenter.centerXProperty(),
                 startCenter.centerYProperty(),
                 endCenter.centerXProperty(),
-                endCenter.centerYProperty(),data);
+                endCenter.centerYProperty(),data,this);
 
         pane.getChildren().add(inheritance);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, inheritance));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, inheritance,startCardinality,endCardinality));
     }
 
     public void drawRealization() {
@@ -292,7 +293,7 @@ public class MainViewController implements Initializable {
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
                     endCenter.centerXProperty(),
-                    endCenter.centerYProperty(),data);
+                    endCenter.centerYProperty(),data,this);
 
             pane.getChildren().add(realization);
             data.connectedPairs.add(new ConnectedPair(
@@ -304,7 +305,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawRealization(String vbox1, String vbox2) {
+    public void drawRealization(String vbox1, String vbox2,String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -314,10 +315,10 @@ public class MainViewController implements Initializable {
                 startCenter.centerXProperty(),
                 startCenter.centerYProperty(),
                 endCenter.centerXProperty(),
-                endCenter.centerYProperty(),data);
+                endCenter.centerYProperty(),data,this);
 
         pane.getChildren().add(realization);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, realization));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, realization,startCardinality,endCardinality));
     }
 
     public void drawAggregation() {
@@ -328,7 +329,7 @@ public class MainViewController implements Initializable {
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
                     endCenter.centerXProperty(),
-                    endCenter.centerYProperty(),data);
+                    endCenter.centerYProperty(),data,this);
 
             pane.getChildren().add(aggregation);
             data.connectedPairs.add(new ConnectedPair(
@@ -341,7 +342,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawAggregation(String vbox1, String vbox2) {
+    public void drawAggregation(String vbox1, String vbox2,String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -351,10 +352,10 @@ public class MainViewController implements Initializable {
                 startCenter.centerXProperty(),
                 startCenter.centerYProperty(),
                 endCenter.centerXProperty(),
-                endCenter.centerYProperty(),data);
+                endCenter.centerYProperty(),data,this);
 
         pane.getChildren().add(aggregation);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, aggregation));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, aggregation,startCardinality,endCardinality));
     }
 
     public void drawComposition() {
@@ -365,7 +366,7 @@ public class MainViewController implements Initializable {
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
                     endCenter.centerXProperty(),
-                    endCenter.centerYProperty(),data);
+                    endCenter.centerYProperty(),data,this);
 
             pane.getChildren().add(composition);
             data.connectedPairs.add(new ConnectedPair(
@@ -377,7 +378,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawComposition(String vbox1, String vbox2) {
+    public void drawComposition(String vbox1, String vbox2,String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -387,10 +388,10 @@ public class MainViewController implements Initializable {
                 startCenter.centerXProperty(),
                 startCenter.centerYProperty(),
                 endCenter.centerXProperty(),
-                endCenter.centerYProperty(),data);
+                endCenter.centerYProperty(),data, this);
 
         pane.getChildren().add(composition);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, composition));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, composition,startCardinality,endCardinality));
     }
 
     private VBox getVBox(String vbox) {
@@ -401,6 +402,56 @@ public class MainViewController implements Initializable {
             }
         }
         return vb;
+    }
+
+    public void showConnection(MouseEvent e) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("connection-view.fxml"));
+        try {
+            Parent root = loader.load();
+            ConnectionViewController controller = loader.getController();
+            String connectionId;
+            switch (e.getSource().getClass().getSimpleName()) {
+                case "Association" -> {
+                    Association association = (Association) e.getSource();
+                    connectionId = association.getId();
+                    association.showConnection(data,connectionId,controller);
+                }
+                case "Aggregation" -> {
+                    Aggregation aggregation = (Aggregation) e.getSource();
+                    connectionId = aggregation.getId();
+                    aggregation.showConnection(data,connectionId,controller);
+                }
+                case "Composition" -> {
+                    Composition composition = (Composition) e.getSource();
+                    connectionId = composition.getId();
+                    composition.showConnection(data,connectionId,controller);
+                }
+                case "Dependency" -> {
+                    Dependency dependency = (Dependency) e.getSource();
+                    connectionId = dependency.getId();
+                    dependency.showConnection(data,connectionId,controller);
+                }
+                case "Inheritance" -> {
+                    Inheritance inheritance = (Inheritance) e.getSource();
+                    connectionId = inheritance.getId();
+                    inheritance.showConnection(data,connectionId,controller);
+                }
+                case "Realization" -> {
+                    Realization realization = (Realization) e.getSource();
+                    connectionId = realization.getId();
+                    realization.showConnection(data,connectionId,controller);
+                }
+            }
+
+
+
+            Stage stage = new Stage();
+            stage.setTitle("Settings");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch(IOException exception) {
+            loadingOtherControllerException();
+        }
     }
 
     private void connectionError() {

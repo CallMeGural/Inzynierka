@@ -5,12 +5,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import pl.gf.umlcd.Data;
+import pl.gf.umlcd.MainViewController;
+import pl.gf.umlcd.OtherClassEntity;
 
 import java.io.IOException;
 import java.net.URL;
