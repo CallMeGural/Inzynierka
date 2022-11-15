@@ -19,4 +19,11 @@ public class ConnectedPair {
         this.cardinality1="not specified";
         this.cardinality2="not specified";
     }
+    public ConnectedPair(VBox vBox1, VBox vBox2, Group connection, String startCardinality, String endCardinality) {
+        this.vBox1 = vBox1;
+        this.vBox2 = vBox2;
+        this.connection = connection;
+        this.cardinality1=startCardinality;
+        this.cardinality2=endCardinality;
+    }
 }

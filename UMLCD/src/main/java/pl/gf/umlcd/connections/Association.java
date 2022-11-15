@@ -27,6 +27,8 @@ public class Association extends Group {
 
     protected final double ARROW_SCALER = 20;
     protected static int counter=0;
+
+
     public Association(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data, MainViewController controller){
         this.setId("conn"+counter);
         this.x1.bind(x1);
@@ -102,31 +104,26 @@ public class Association extends Group {
         controller.data=data;
         Label label;
         //Start Node
-        if(data.connectedPairs.get(controller.connectionId).getVBox1().getClass().getSimpleName().equals("ClassEntity")) {
+        //if(data.connectedPairs.get(controller.connectionId).getVBox1().getClass().getSimpleName().equals("ClassEntity")) {
+        //if(data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().get(2).getClass().getSimpleName().equals("TextArea")) {
+        if(data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().size() == 5)
             label = (Label) data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().get(0);
-            //data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().remove(0);
-        }
-        else {
+        else
             label = (Label) data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().get(1);
-            //data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().remove(1);
-        }
         controller.startNameLabel.setText(label.getText());
         //End node
-        if(data.connectedPairs.get(controller.connectionId).getVBox2().getClass().getSimpleName().equals("ClassEntity")) {
-            label = (Label) data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().get(0);
-            //data.connectedPairs.get(controller.connectionId).getVBox2().getChildren().remove(0);
-        }
-        else {
+        if(data.connectedPairs.get(controller.connectionId).getVBox2().getChildren().size() == 5)
+            label = (Label) data.connectedPairs.get(controller.connectionId).getVBox2().getChildren().get(0);
+        else
             label = (Label) data.connectedPairs.get(controller.connectionId).getVBox2().getChildren().get(1);
-            //data.connectedPairs.get(controller.connectionId).getVBox2().getChildren().remove(1);
-        }
         controller.endNameLabel.setText(label.getText());
 
         controller.typeLabel.setText(data.connectedPairs.get(controller.connectionId).getConnection().getClass().getSimpleName());
 
+        String cardinality1 = data.connectedPairs.get((controller.connectionId)).getCardinality1();
+        String cardinality2 = data.connectedPairs.get((controller.connectionId)).getCardinality2();
 
-
-        //controller.startCombo.setPromptText(data.connectedPairs.get(controller.connectionId).getCardinality1());
-        //controller.endCombo.setPromptText(data.connectedPairs.get(controller.connectionId).getCardinality2());
+        controller.startCombo.setPromptText(cardinality1);
+        controller.endCombo.setPromptText(cardinality2);
     }
 }

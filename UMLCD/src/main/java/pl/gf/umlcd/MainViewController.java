@@ -197,7 +197,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawAssociation(String vbox1, String vbox2) {
+    public void drawAssociation(String vbox1, String vbox2, String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -210,7 +210,7 @@ public class MainViewController implements Initializable {
                 endCenter.centerYProperty(),data, this);
 
         pane.getChildren().add(association);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, association));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, association,startCardinality,endCardinality));
     }
 
     public void drawDependency(ActionEvent e) {
@@ -233,7 +233,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawDependency(String vbox1, String vbox2) {
+    public void drawDependency(String vbox1, String vbox2, String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -246,7 +246,7 @@ public class MainViewController implements Initializable {
                 endCenter.centerYProperty(),data,this);
 
         pane.getChildren().add(dependency);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, dependency));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, dependency,startCardinality,endCardinality));
     }
 
     public void drawInheritance() {
@@ -269,7 +269,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawInheritance(String vbox1, String vbox2) {
+    public void drawInheritance(String vbox1, String vbox2,String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -282,7 +282,7 @@ public class MainViewController implements Initializable {
                 endCenter.centerYProperty(),data,this);
 
         pane.getChildren().add(inheritance);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, inheritance));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, inheritance,startCardinality,endCardinality));
     }
 
     public void drawRealization() {
@@ -305,7 +305,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawRealization(String vbox1, String vbox2) {
+    public void drawRealization(String vbox1, String vbox2,String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -318,7 +318,7 @@ public class MainViewController implements Initializable {
                 endCenter.centerYProperty(),data,this);
 
         pane.getChildren().add(realization);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, realization));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, realization,startCardinality,endCardinality));
     }
 
     public void drawAggregation() {
@@ -342,7 +342,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawAggregation(String vbox1, String vbox2) {
+    public void drawAggregation(String vbox1, String vbox2,String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -355,7 +355,7 @@ public class MainViewController implements Initializable {
                 endCenter.centerYProperty(),data,this);
 
         pane.getChildren().add(aggregation);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, aggregation));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, aggregation,startCardinality,endCardinality));
     }
 
     public void drawComposition() {
@@ -378,7 +378,7 @@ public class MainViewController implements Initializable {
         }
 
     }
-    public void drawComposition(String vbox1, String vbox2) {
+    public void drawComposition(String vbox1, String vbox2,String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
 
@@ -391,7 +391,7 @@ public class MainViewController implements Initializable {
                 endCenter.centerYProperty(),data, this);
 
         pane.getChildren().add(composition);
-        data.connectedPairs.add(new ConnectedPair(vb1, vb2, composition));
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, composition,startCardinality,endCardinality));
     }
 
     private VBox getVBox(String vbox) {

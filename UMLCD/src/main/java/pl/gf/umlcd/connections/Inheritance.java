@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.gf.umlcd.Data;
 import pl.gf.umlcd.MainViewController;
@@ -12,6 +13,7 @@ import pl.gf.umlcd.MainViewController;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Inheritance extends Dependency {
 
     protected Polygon triangle = new Polygon();
@@ -32,10 +34,6 @@ public class Inheritance extends Dependency {
         update();
         doubleClickEvent(controller,data);
         counter++;
-    }
-
-    public Inheritance() {
-
     }
 
     @Override

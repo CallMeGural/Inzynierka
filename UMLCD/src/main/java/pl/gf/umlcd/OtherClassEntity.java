@@ -2,6 +2,7 @@ package pl.gf.umlcd;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
@@ -18,13 +19,37 @@ public class OtherClassEntity extends ClassEntity {
     private Label title;
     OtherClassType type;
 
-
     public OtherClassEntity(Label title) {
-        super();
+        this.vbox = new VBox();
+        this.name = new Label("Class Name");
+        this.variablesLab = new Label("Variables");
+        this.methodsLab = new Label("Methods");
+        this.vars = new TextArea();
+        this.meths = new TextArea();
+
+        vbox.setId("other"+counter);
+        vbox.setPrefSize(WIDTH,HEIGHT);
+        vbox.setStyle("-fx-border-style: solid");
+        System.out.println(vbox.getId());
+        counter++;
         this.title=title;
+        System.out.println("Tworze obiekt OtherClassEntity");
     }
+
     public OtherClassEntity(Label title, OtherClassType type) {
-        super();
+        //super();
+        this.vbox = new VBox();
+        this.name = new Label("Class Name");
+        this.variablesLab = new Label("Variables");
+        this.methodsLab = new Label("Methods");
+        this.vars = new TextArea();
+        this.meths = new TextArea();
+
+        vbox.setId("other"+counter);
+        vbox.setPrefSize(WIDTH,HEIGHT);
+        vbox.setStyle("-fx-border-style: solid");
+        System.out.println(vbox.getId());
+        counter++;
         this.type=type;
         this.title = title;
         this.title.setText("<<"+type.name().toLowerCase(Locale.ROOT)+">>");

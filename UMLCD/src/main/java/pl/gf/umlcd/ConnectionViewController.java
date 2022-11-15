@@ -39,11 +39,18 @@ public class ConnectionViewController implements Initializable {
 
     public void saveAndExit() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-
         Parent root = loader.load();
         MainViewController controller = loader.getController();
-        data.connectedPairs.get(connectionId).setCardinality1(startCombo.getValue());
-        data.connectedPairs.get(connectionId).setCardinality2(endCombo.getValue());
+        if(startCombo.getValue() == null)
+            data.connectedPairs.get(connectionId).setCardinality1(startCombo.getPromptText());
+        else
+            data.connectedPairs.get(connectionId).setCardinality1(startCombo.getValue());
+
+        if (endCombo.getValue() == null)
+            data.connectedPairs.get(connectionId).setCardinality2(endCombo.getPromptText());
+        else
+            data.connectedPairs.get(connectionId).setCardinality2(endCombo.getValue());
+
         controller.data = data;
         Stage stage = (Stage) pane.getScene().getWindow();
         stage.close();
