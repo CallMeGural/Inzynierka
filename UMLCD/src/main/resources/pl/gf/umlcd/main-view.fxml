@@ -13,7 +13,6 @@
         <VBox prefHeight="510.0" prefWidth="90.0" style="-fx-background-color: 212930;" BorderPane.alignment="CENTER">
             <children>
                 <Button fx:id="claButton" mnemonicParsing="false" onAction="#createNewClassEntity" prefHeight="50.0" prefWidth="90.0" text="Class" />
-                <Button fx:id="priButton" mnemonicParsing="false" onAction="#createNewPrimitiveEntity" prefHeight="50.0" prefWidth="90.0" text="Primitive" />
                 <Button fx:id="enuButton" mnemonicParsing="false" onAction="#createNewEnumEntity" prefHeight="50.0" prefWidth="90.0" text="Enum" />
                 <Button fx:id="intButton" mnemonicParsing="false" onAction="#createNewInterfaceEntity" prefHeight="50.0" prefWidth="90.0" text="Interface" />
                 <Button fx:id="assButton" mnemonicParsing="false" onAction="#drawAssociation" prefHeight="50.0" prefWidth="90.0" text="Association" textAlignment="CENTER" />

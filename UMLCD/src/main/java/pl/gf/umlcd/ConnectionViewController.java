@@ -26,21 +26,19 @@ public class ConnectionViewController implements Initializable {
     @FXML
     AnchorPane pane;
 
-    String[] cardinalities = {"not specified","1","0..1","*","1..*","{ordered}"};
+    String[] cardinalities;
     public Data data;
     public int connectionId;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         data = Data.getInstance();
+        cardinalities = new String[]{"not specified", "1", "0..1", "*", "1..*", "{ordered}"};
         startCombo.getItems().addAll(cardinalities);
         endCombo.getItems().addAll(cardinalities);
     }
 
-    public void saveAndExit() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-        Parent root = loader.load();
-        MainViewController controller = loader.getController();
+    public void saveAndExit(){
         if(startCombo.getValue() == null)
             data.connectedPairs.get(connectionId).setCardinality1(startCombo.getPromptText());
         else
@@ -51,7 +49,6 @@ public class ConnectionViewController implements Initializable {
         else
             data.connectedPairs.get(connectionId).setCardinality2(endCombo.getValue());
 
-        controller.data = data;
         Stage stage = (Stage) pane.getScene().getWindow();
         stage.close();
     }

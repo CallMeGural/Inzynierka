@@ -6,6 +6,8 @@ module pl.gf.umlcd {
     requires SwingUtils;
     requires java.desktop;
     requires ini4j;
+    requires junit;
+    requires org.testfx;
 
 
     opens pl.gf.umlcd to javafx.fxml;

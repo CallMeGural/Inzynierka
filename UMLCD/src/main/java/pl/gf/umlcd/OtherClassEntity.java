@@ -56,7 +56,7 @@ public class OtherClassEntity extends ClassEntity {
     }
 
     @Override
-    protected void setNodesToVBox() {
+    public void setNodesToVBox() {
         vbox.getChildren().addAll(title, name, variablesLab, vars, methodsLab, meths);
         System.out.println("VBox " + vbox.getId() + " prepared");
         vbox.setAlignment(Pos.CENTER);
@@ -73,20 +73,12 @@ public class OtherClassEntity extends ClassEntity {
     }
 
     @Override
-    public void showEntity(Data data, MainViewController mainController, ObjectDetailController objController, VBox vb, String vBoxId) {
-        for(int i = 0; i<data.entityList.size(); i++) {
-            if(data.entityList.get(i).getVbox().getId().equals(vBoxId)) {
-                objController.pickedId=i;
-                break;
-            }
-        }
-        objController.data=data;
+    public void setChildren(Data data, ObjectDetailController controller) {
+        Label label = (Label) data.entityList.get(controller.pickedId).getVbox().getChildren().get(1);
+        data.entityList.get(controller.pickedId).getVbox().getChildren().remove(1);
+        controller.vBox.getChildren().add(data.entityList.get(controller.pickedId).getVbox().getChildren().get(0));
+        controller.vBox.getChildren().add(new TextField(label.getText()));
+        controller.vBox.getChildren().addAll(data.entityList.get(controller.pickedId).getVbox().getChildren());
 
-        Label label = (Label) data.entityList.get(objController.pickedId).getVbox().getChildren().get(1);
-        data.entityList.get(objController.pickedId).getVbox().getChildren().remove(1);
-        objController.vBox.getChildren().add(data.entityList.get(objController.pickedId).getVbox().getChildren().get(0));
-        objController.vBox.getChildren().add(new TextField(label.getText()));
-        objController.vBox.getChildren().addAll(data.entityList.get(objController.pickedId).getVbox().getChildren());
     }
-
 }

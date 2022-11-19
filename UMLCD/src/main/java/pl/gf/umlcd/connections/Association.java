@@ -14,6 +14,8 @@ import pl.gf.umlcd.ConnectionViewController;
 import pl.gf.umlcd.Data;
 import pl.gf.umlcd.MainViewController;
 
+import java.io.IOException;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -73,10 +75,10 @@ public class Association extends Group {
         this.setOnMouseClicked(e -> {
             if(e.getButton().equals(MouseButton.PRIMARY)){
                 System.out.println(e.getClickCount());
-                if(e.getClickCount() == 1) {
+                if(e.getClickCount() == 1)
                     singleClickEvent(data);
-                }
-                else controller.showConnection(e);
+                else
+                    controller.showConnection(e);
             }
         });
     }

@@ -1,7 +1,7 @@
 package pl.gf.umlcd;
 
 public enum OtherClassType {
-    PRIMITIVE,
+    //PRIMITIVE,
     INTERFACE,
-    ENUM,
+    ENUM
 }
