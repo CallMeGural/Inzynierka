@@ -1,6 +1,5 @@
 package pl.gf.umlcd;
 
-import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import pl.gf.umlcd.connections.*;
@@ -20,6 +19,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pl.gf.umlcd.exceptions.*;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -40,10 +40,12 @@ public class MainViewController implements Initializable {
     DraggableMaker draggableMaker;// = new DraggableMaker();
     Data data;// = new Data();
     SaveData saveData;// = new SaveData();
+    WrongConnection wrongConnection;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         draggableMaker = new DraggableMaker();
+        wrongConnection = new WrongConnection();
         //data = new Data();
         data = Data.getInstance();
         saveData = new SaveData();
@@ -92,10 +94,10 @@ public class MainViewController implements Initializable {
     }
 
     public void saveFile(ActionEvent e) {
-        saveData.save(this);
+        data.save(this);
     }
     public void loadFile(ActionEvent e) {
-        saveData.load(this,data);
+        data.load(this,data);
     }
 
 
@@ -119,8 +121,16 @@ public class MainViewController implements Initializable {
             VBox temp = (VBox) e.getSource();
             String vBoxId = temp.getId();
 
-            ClassEntity classEntity = new ClassEntity();
-            classEntity.showEntity(data,this,controller,temp,vBoxId);
+            ClassEntity classEntity;// = new ClassEntity();
+            for(ClassEntity entity : data.entityList) {
+                if(entity.getVbox().getId().equals(vBoxId)) {
+                    classEntity = entity;
+                    classEntity.pickEntity(data,controller,temp,vBoxId);
+                    classEntity.setChildren(data, controller);
+                    break;
+                }
+            }
+
             Stage stage = new Stage();
             stage.setTitle("Settings");
             stage.setScene(new Scene(root));
@@ -146,13 +156,13 @@ public class MainViewController implements Initializable {
         otherClassEntity.initializeEntity(draggableMaker,this,data,pane);
     }
 
-    public void createNewPrimitiveEntity(ActionEvent e) {
+    /*public void createNewPrimitiveEntity(ActionEvent e) {
         OtherClassEntity entity = new OtherClassEntity(new Label(),OtherClassType.PRIMITIVE);
         entity.initializeEntity(draggableMaker,this, data, pane);
     }
     public void createNewPrimitiveEntity(OtherClassEntity otherClassEntity) {
         otherClassEntity.initializeEntity(draggableMaker,this,data,pane);
-    }
+    }*/
 
     public void showOtherEntity(MouseEvent e) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("class-view.fxml"));
@@ -163,8 +173,15 @@ public class MainViewController implements Initializable {
             VBox temp = (VBox) e.getSource();
             String vBoxId = temp.getId();
 
-            OtherClassEntity otherClassEntity = new OtherClassEntity();
-            otherClassEntity.showEntity(data,this,controller,temp,vBoxId);
+            OtherClassEntity otherClassEntity;// = new OtherClassEntity();
+            for(ClassEntity entity : data.entityList) {
+                if(entity.getVbox().getId().equals(vBoxId)) {
+                    otherClassEntity = (OtherClassEntity) entity;
+                    otherClassEntity.pickEntity(data,controller,temp,vBoxId);
+                    otherClassEntity.setChildren(data,controller);
+                    break;
+                }
+            }
             Stage stage = new Stage();
             stage.setTitle("Settings");
             stage.setScene(new Scene(root));
@@ -182,6 +199,10 @@ public class MainViewController implements Initializable {
         try {
             Center startCenter = new Center(data.pickedPair.get(0).getVbox());
             Center endCenter = new Center(data.pickedPair.get(1).getVbox());
+
+            wrongConnection.associationBetweenOtherTypes(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.associationBetweenEnumAndOther(data.pickedPair.get(0),data.pickedPair.get(1));
+
             Association association = new Association(
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
@@ -192,8 +213,12 @@ public class MainViewController implements Initializable {
                     data.pickedPair.get(0).getVbox(),
                     data.pickedPair.get(1).getVbox(),
                     association));
-        } catch (IndexOutOfBoundsException exception) {
+        } catch (IndexOutOfBoundsException exception1) {
             connectionError();
+        } catch (WrongAssociationException exception2) {
+            exception2.showMessage();
+        } catch (WrongEnumConnectionException exception3) {
+            exception3.showMessage();
         }
 
     }
@@ -213,10 +238,59 @@ public class MainViewController implements Initializable {
         data.connectedPairs.add(new ConnectedPair(vb1, vb2, association,startCardinality,endCardinality));
     }
 
+    public void drawDirectedAssociation(ActionEvent e) {
+        try {
+            Center startCenter = new Center(data.pickedPair.get(0).getVbox());
+            Center endCenter = new Center(data.pickedPair.get(1).getVbox());
+
+            wrongConnection.associationBetweenOtherTypes(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.associationBetweenEnumAndOther(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.wrongDirectedAssociationFlow(data.pickedPair.get(0),data.pickedPair.get(1));
+
+            DirectedAssociation association = new DirectedAssociation(
+                    startCenter.centerXProperty(),
+                    startCenter.centerYProperty(),
+                    endCenter.centerXProperty(),
+                    endCenter.centerYProperty(),data, this);
+            pane.getChildren().add(association);
+            data.connectedPairs.add(new ConnectedPair(
+                    data.pickedPair.get(0).getVbox(),
+                    data.pickedPair.get(1).getVbox(),
+                    association));
+        } catch (IndexOutOfBoundsException exception1) {
+            connectionError();
+        } catch (WrongAssociationException exception2) {
+            exception2.showMessage();
+        } catch (WrongEnumConnectionException exception3) {
+            exception3.showMessage();
+        } catch (WrongDirectedAssociationException exception4) {
+            exception4.showMessage();
+        }
+
+    }
+    public void drawDirectedAssociation(String vbox1, String vbox2, String startCardinality, String endCardinality) {
+        VBox vb1 = getVBox(vbox1);
+        VBox vb2 = getVBox(vbox2);
+
+        Center startCenter = new Center(vb1);
+        Center endCenter = new Center(vb2);
+        Association association = new Association(
+                startCenter.centerXProperty(),
+                startCenter.centerYProperty(),
+                endCenter.centerXProperty(),
+                endCenter.centerYProperty(),data, this);
+
+        pane.getChildren().add(association);
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, association,startCardinality,endCardinality));
+    }
+
     public void drawDependency(ActionEvent e) {
         try {
             Center startCenter = new Center(data.pickedPair.get(0).getVbox());
             Center endCenter = new Center(data.pickedPair.get(1).getVbox());
+
+            wrongConnection.dependencyBetweenNonClasses(data.pickedPair.get(0),data.pickedPair.get(1));
+
             Dependency dependency = new Dependency(
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
@@ -228,8 +302,10 @@ public class MainViewController implements Initializable {
                     data.pickedPair.get(0).getVbox(),
                     data.pickedPair.get(1).getVbox(),
                     dependency));
-        } catch (IndexOutOfBoundsException exception) {
+        } catch (IndexOutOfBoundsException exception1) {
             connectionError();
+        } catch (WrongDependencyException exception2) {
+            exception2.showMessage();
         }
 
     }
@@ -253,6 +329,9 @@ public class MainViewController implements Initializable {
         try {
             Center startCenter = new Center(data.pickedPair.get(0).getVbox());
             Center endCenter = new Center(data.pickedPair.get(1).getVbox());
+
+            wrongConnection.inheritanceBetweenOtherTypes(data.pickedPair.get(0),data.pickedPair.get(1));
+
             Inheritance inheritance = new Inheritance(
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
@@ -264,8 +343,10 @@ public class MainViewController implements Initializable {
                     data.pickedPair.get(0).getVbox(),
                     data.pickedPair.get(1).getVbox(),
                     inheritance));
-        } catch (IndexOutOfBoundsException exception) {
+        } catch (IndexOutOfBoundsException exception1) {
             connectionError();
+        } catch (WrongInheritanceException exception2) {
+            exception2.showMessage();
         }
 
     }
@@ -289,6 +370,9 @@ public class MainViewController implements Initializable {
         try {
             Center startCenter = new Center(data.pickedPair.get(0).getVbox());
             Center endCenter = new Center(data.pickedPair.get(1).getVbox());
+
+            wrongConnection.wrongRealization(data.pickedPair.get(0),data.pickedPair.get(1));
+
             Realization realization = new Realization(
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
@@ -300,8 +384,10 @@ public class MainViewController implements Initializable {
                     data.pickedPair.get(0).getVbox(),
                     data.pickedPair.get(1).getVbox(),
                     realization));
-        } catch (IndexOutOfBoundsException exception) {
+        } catch (IndexOutOfBoundsException exception1) {
             connectionError();
+        } catch (WrongRealizationException exception2) {
+            exception2.showMessage();
         }
 
     }
@@ -325,6 +411,12 @@ public class MainViewController implements Initializable {
         try {
             Center startCenter = new Center(data.pickedPair.get(0).getVbox());
             Center endCenter = new Center(data.pickedPair.get(1).getVbox());
+
+            wrongConnection.associationBetweenOtherTypes(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.associationBetweenEnumAndOther(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.wrongDirectedAssociationFlow(data.pickedPair.get(0),data.pickedPair.get(1));
+
+
             Aggregation aggregation = new Aggregation(
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
@@ -337,8 +429,14 @@ public class MainViewController implements Initializable {
                     data.pickedPair.get(1).getVbox(),
                     aggregation));
         }
-        catch (IndexOutOfBoundsException exception) {
+        catch (IndexOutOfBoundsException exception1) {
             connectionError();
+        } catch (WrongEnumConnectionException exception2) {
+            exception2.showMessage();
+        } catch (WrongAssociationException exception3) {
+            exception3.showMessage();
+        } catch (WrongDirectedAssociationException exception4) {
+            exception4.showMessage();
         }
 
     }
@@ -362,6 +460,11 @@ public class MainViewController implements Initializable {
         try {
             Center startCenter = new Center(data.pickedPair.get(0).getVbox());
             Center endCenter = new Center(data.pickedPair.get(1).getVbox());
+
+            wrongConnection.associationBetweenOtherTypes(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.associationBetweenEnumAndOther(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.wrongDirectedAssociationFlow(data.pickedPair.get(0),data.pickedPair.get(1));
+
             Composition composition = new Composition(
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
@@ -373,8 +476,14 @@ public class MainViewController implements Initializable {
                     data.pickedPair.get(0).getVbox(),
                     data.pickedPair.get(1).getVbox(),
                     composition));
-        } catch (IndexOutOfBoundsException exception) {
+        } catch (IndexOutOfBoundsException exception1) {
             connectionError();
+        } catch (WrongEnumConnectionException exception2) {
+            exception2.showMessage();
+        } catch (WrongAssociationException exception3) {
+            exception3.showMessage();
+        } catch (WrongDirectedAssociationException exception4) {
+            exception4.showMessage();
         }
 
     }
@@ -442,9 +551,6 @@ public class MainViewController implements Initializable {
                     realization.showConnection(data,connectionId,controller);
                 }
             }
-
-
-
             Stage stage = new Stage();
             stage.setTitle("Settings");
             stage.setScene(new Scene(root));

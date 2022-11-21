@@ -42,7 +42,7 @@ public class ClassEntity {
     }
 
     //przypisuje do VBoxa odpowiednie labelki i textfieldy
-    protected void setNodesToVBox(){
+    public void setNodesToVBox(){
         counter++;
         vbox.getChildren().addAll(name,variablesLab,vars,methodsLab,meths);
         System.out.println("VBox "+vbox.getId()+" prepared");
@@ -87,22 +87,23 @@ public class ClassEntity {
     }
 
     //wyswietlenie wlasciwosci klasy
-    public void showEntity(Data data, MainViewController mainController, ObjectDetailController objController, VBox vb, String vBoxId) {
+    public void pickEntity(Data data, ObjectDetailController controller, VBox vb, String vBoxId) {
         //odnalezienie odpowiedniej klasy w liscie
         for(int i = 0; i<data.entityList.size(); i++) {
-            if(data.entityList.get(i).getVbox().getId().equals(vBoxId)) {
-                objController.pickedId=i;
+            if (data.entityList.get(i).getVbox().getId().equals(vBoxId)) {
+                controller.pickedId = i;
                 break;
             }
         }
-        objController.data=data;
+    }
 
+    public void setChildren(Data data,ObjectDetailController controller) {
         //przepisanie labelkow i textfieldow do nowego okna
-        Label label = (Label) data.entityList.get(objController.pickedId).getVbox().getChildren().get(0);
-        data.entityList.get(objController.pickedId).getVbox().getChildren().remove(0);
+        Label label = (Label) data.entityList.get(controller.pickedId).getVbox().getChildren().get(0);
+        data.entityList.get(controller.pickedId).getVbox().getChildren().remove(0);
 
-        objController.vBox.getChildren().add(new TextField(label.getText()));
-        objController.vBox.getChildren().addAll(data.entityList.get(objController.pickedId).getVbox().getChildren());
+        controller.vBox.getChildren().add(new TextField(label.getText()));
+        controller.vBox.getChildren().addAll(data.entityList.get(controller.pickedId).getVbox().getChildren());
     }
 
 }

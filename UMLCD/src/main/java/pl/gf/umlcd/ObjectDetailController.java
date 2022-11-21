@@ -35,11 +35,6 @@ public class ObjectDetailController implements Initializable {
     }
 
     public void saveAndExit(ActionEvent e) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-        try {
-            Parent root = loader.load();
-            MainViewController controller = loader.getController();
-
             if (data.entityList.get(pickedId).getClass() != OtherClassEntity.class) {
                 //Class
                 TextField textField = (TextField) vBox.getChildren().get(0);
@@ -60,18 +55,7 @@ public class ObjectDetailController implements Initializable {
                         vBox.getChildren().get(4),
                         vBox.getChildren().get(5));
             }
-            controller.data = data;
             Stage stage = (Stage) pane.getScene().getWindow();
             stage.close();
-        } catch (IOException exception) {
-            loadingOtherControllerException();
-        }
-    }
-    private void loadingOtherControllerException() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Controller error");
-        alert.setHeaderText("Could not read other controller");
-        alert.setContentText("Trying to read the FXML file that does not exist");
-        alert.showAndWait();
     }
 }
