@@ -173,6 +173,9 @@ public final class Data {
             case "Association" ->
                     controller.drawAssociation(section.get("start"),section.get("end"),
                             section.get("startCardinality"),section.get("endCardinality"));
+            case "DirectedAssociation" ->
+                    controller.drawDirectedAssociation(section.get("start"),section.get("end"),
+                            section.get("startCardinality"),section.get("endCardinality"));
             case "Composition" ->
                     controller.drawComposition(section.get("start"),section.get("end"),
                             section.get("startCardinality"),section.get("endCardinality"));

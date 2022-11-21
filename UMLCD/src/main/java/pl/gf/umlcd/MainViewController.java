@@ -238,6 +238,52 @@ public class MainViewController implements Initializable {
         data.connectedPairs.add(new ConnectedPair(vb1, vb2, association,startCardinality,endCardinality));
     }
 
+    public void drawDirectedAssociation(ActionEvent e) {
+        try {
+            Center startCenter = new Center(data.pickedPair.get(0).getVbox());
+            Center endCenter = new Center(data.pickedPair.get(1).getVbox());
+
+            wrongConnection.associationBetweenOtherTypes(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.associationBetweenEnumAndOther(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.wrongDirectedAssociationFlow(data.pickedPair.get(0),data.pickedPair.get(1));
+
+            DirectedAssociation association = new DirectedAssociation(
+                    startCenter.centerXProperty(),
+                    startCenter.centerYProperty(),
+                    endCenter.centerXProperty(),
+                    endCenter.centerYProperty(),data, this);
+            pane.getChildren().add(association);
+            data.connectedPairs.add(new ConnectedPair(
+                    data.pickedPair.get(0).getVbox(),
+                    data.pickedPair.get(1).getVbox(),
+                    association));
+        } catch (IndexOutOfBoundsException exception1) {
+            connectionError();
+        } catch (WrongAssociationException exception2) {
+            exception2.showMessage();
+        } catch (WrongEnumConnectionException exception3) {
+            exception3.showMessage();
+        } catch (WrongDirectedAssociationException exception4) {
+            exception4.showMessage();
+        }
+
+    }
+    public void drawDirectedAssociation(String vbox1, String vbox2, String startCardinality, String endCardinality) {
+        VBox vb1 = getVBox(vbox1);
+        VBox vb2 = getVBox(vbox2);
+
+        Center startCenter = new Center(vb1);
+        Center endCenter = new Center(vb2);
+        Association association = new Association(
+                startCenter.centerXProperty(),
+                startCenter.centerYProperty(),
+                endCenter.centerXProperty(),
+                endCenter.centerYProperty(),data, this);
+
+        pane.getChildren().add(association);
+        data.connectedPairs.add(new ConnectedPair(vb1, vb2, association,startCardinality,endCardinality));
+    }
+
     public void drawDependency(ActionEvent e) {
         try {
             Center startCenter = new Center(data.pickedPair.get(0).getVbox());
@@ -365,18 +411,12 @@ public class MainViewController implements Initializable {
         try {
             Center startCenter = new Center(data.pickedPair.get(0).getVbox());
             Center endCenter = new Center(data.pickedPair.get(1).getVbox());
-            if(data.pickedPair.get(0).getClass().getSimpleName().equals("ClassEntity") &&
-                    !data.pickedPair.get(0).getClass().equals(data.pickedPair.get(1).getClass()))
-                throw new WrongAggregationException();
-            if(data.pickedPair.get(0).getClass().getSimpleName().equals("OtherClassEntity") &&
-                    !data.pickedPair.get(0).getClass().equals(data.pickedPair.get(1).getClass()))
-                throw new WrongAggregationException();
-            if(data.pickedPair.get(0).getClass().getSimpleName().equals("OtherClassEntity") &&
-                    data.pickedPair.get(0).getClass().equals(data.pickedPair.get(1).getClass())) {
-                Label labelStart = (Label) data.pickedPair.get(0).getVbox().getChildren().get(0);
-                Label labelEnd = (Label) data.pickedPair.get(1).getVbox().getChildren().get(0);
-                if(!labelStart.getText().equals(labelEnd.getText())) throw new WrongAggregationException();
-            }
+
+            wrongConnection.associationBetweenOtherTypes(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.associationBetweenEnumAndOther(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.wrongDirectedAssociationFlow(data.pickedPair.get(0),data.pickedPair.get(1));
+
+
             Aggregation aggregation = new Aggregation(
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
@@ -391,8 +431,12 @@ public class MainViewController implements Initializable {
         }
         catch (IndexOutOfBoundsException exception1) {
             connectionError();
-        } catch (WrongAggregationException exception2) {
+        } catch (WrongEnumConnectionException exception2) {
             exception2.showMessage();
+        } catch (WrongAssociationException exception3) {
+            exception3.showMessage();
+        } catch (WrongDirectedAssociationException exception4) {
+            exception4.showMessage();
         }
 
     }
@@ -416,18 +460,11 @@ public class MainViewController implements Initializable {
         try {
             Center startCenter = new Center(data.pickedPair.get(0).getVbox());
             Center endCenter = new Center(data.pickedPair.get(1).getVbox());
-            if(data.pickedPair.get(0).getClass().getSimpleName().equals("ClassEntity") &&
-                    !data.pickedPair.get(0).getClass().equals(data.pickedPair.get(1).getClass()))
-                throw new WrongCompositionException();
-            if(data.pickedPair.get(0).getClass().getSimpleName().equals("OtherClassEntity") &&
-                    !data.pickedPair.get(0).getClass().equals(data.pickedPair.get(1).getClass()))
-                throw new WrongCompositionException();
-            if(data.pickedPair.get(0).getClass().getSimpleName().equals("OtherClassEntity") &&
-                    data.pickedPair.get(0).getClass().equals(data.pickedPair.get(1).getClass())) {
-                Label labelStart = (Label) data.pickedPair.get(0).getVbox().getChildren().get(0);
-                Label labelEnd = (Label) data.pickedPair.get(1).getVbox().getChildren().get(0);
-                if(!labelStart.getText().equals(labelEnd.getText())) throw new WrongCompositionException();
-            }
+
+            wrongConnection.associationBetweenOtherTypes(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.associationBetweenEnumAndOther(data.pickedPair.get(0),data.pickedPair.get(1));
+            wrongConnection.wrongDirectedAssociationFlow(data.pickedPair.get(0),data.pickedPair.get(1));
+
             Composition composition = new Composition(
                     startCenter.centerXProperty(),
                     startCenter.centerYProperty(),
@@ -441,8 +478,12 @@ public class MainViewController implements Initializable {
                     composition));
         } catch (IndexOutOfBoundsException exception1) {
             connectionError();
-        } catch (WrongCompositionException exception2) {
+        } catch (WrongEnumConnectionException exception2) {
             exception2.showMessage();
+        } catch (WrongAssociationException exception3) {
+            exception3.showMessage();
+        } catch (WrongDirectedAssociationException exception4) {
+            exception4.showMessage();
         }
 
     }

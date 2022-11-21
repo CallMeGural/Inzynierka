@@ -7,24 +7,27 @@ import pl.gf.umlcd.exceptions.*;
 public class WrongConnection {
 
     public void associationBetweenOtherTypes(ClassEntity start, ClassEntity end) throws WrongAssociationException {
-        Label label = new Label();
+        Label label;
         if(start.getClass().getSimpleName().equals("ClassEntity") &&
-                    !start.getClass().equals(end.getClass()))
+                    !start.getClass().equals(end.getClass())) {
             label = (Label) end.getVbox().getChildren().get(0);
             if(!label.getText().equals("<<enum>>"))
                 //class and nonEnum
                 throw new WrongAssociationException();
-            if(start.getClass().getSimpleName().equals("OtherClassEntity") &&
-                    !start.getClass().equals(end.getClass()))
-                label = (Label) start.getVbox().getChildren().get(0);
-                if(!label.getText().equals("<<enum>>"))
+        }
+        if(end.getClass().getSimpleName().equals("ClassEntity") &&
+                !start.getClass().equals(end.getClass())) {
+            label = (Label) start.getVbox().getChildren().get(0);
+            if(!label.getText().equals("<<enum>>"))
                 //nonEnum and class
                 throw new WrongAssociationException();
-            if(start.getClass().getSimpleName().equals("OtherClassEntity") &&
+        }
+
+        if(start.getClass().getSimpleName().equals("OtherClassEntity") &&
             end.getClass().getSimpleName().equals("OtherClassEntity")) {
-                //nonClass and nonClass
-                throw new WrongAssociationException();
-            }
+            //nonClass and nonClass
+            throw new WrongAssociationException();
+        }
     }
 
     public void associationBetweenEnumAndOther(ClassEntity start, ClassEntity end) throws WrongEnumConnectionException {
@@ -42,20 +45,15 @@ public class WrongConnection {
         }
     }
 
+    public void wrongDirectedAssociationFlow(ClassEntity start, ClassEntity end) throws WrongDirectedAssociationException {
+        if(start.getClass().getSimpleName().equals("OtherClassEntity")) {
+            throw new WrongDirectedAssociationException();
+        }
+    }
+
     public void dependencyBetweenNonClasses(ClassEntity start, ClassEntity end) throws WrongDependencyException {
         if(start.getClass().getSimpleName().equals("OtherClassEntity") ||
         end.getClass().getSimpleName().equals("OtherClassEntity")) throw new WrongDependencyException();
-    }
-
-    public void nonAssociationBetweenEnum(ClassEntity start, ClassEntity end) throws WrongEnumConnectionException {
-        if(start.getClass().getSimpleName().equals("OtherClassEntity")) {
-            Label label = (Label) start.getVbox().getChildren().get(0);
-            if(label.getText().equals("<<enum>>")) throw new WrongEnumConnectionException();
-        }
-        if(end.getClass().getSimpleName().equals("OtherClassEntity")) {
-            Label label = (Label) end.getVbox().getChildren().get(0);
-            if(label.getText().equals("<<enum>>")) throw new WrongEnumConnectionException();
-        }
     }
 
     public void inheritanceBetweenOtherTypes(ClassEntity start, ClassEntity end) throws WrongInheritanceException {
@@ -85,5 +83,4 @@ public class WrongConnection {
         }
         if(!(end.getClass().getSimpleName().equals("ClassEntity"))) throw new WrongRealizationException();
     }
-    //AGGREGATION AND COMPOSITION
 }
