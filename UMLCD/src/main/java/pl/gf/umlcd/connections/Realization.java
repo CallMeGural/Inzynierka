@@ -12,8 +12,8 @@ import pl.gf.umlcd.MainViewController;
 @Setter
 @NoArgsConstructor
 public class Realization extends Inheritance {
-    public Realization(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data, MainViewController controller) {
-        super(x1, y1, x2, y2,data,controller);
+    public Realization(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2/*, Data data*/, MainViewController controller) {
+        super(x1, y1, x2, y2/*,data*/,controller);
         mainLine.getStrokeDashArray().setAll(10.0, 5.0);
     }
 }

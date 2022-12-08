@@ -18,13 +18,15 @@ public class Inheritance extends Dependency {
 
     protected Polygon triangle = new Polygon();
 
-    public Inheritance(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data, MainViewController controller){
+    public Inheritance(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2/*, Data data*/, MainViewController controller){
+        data = Data.getInstance();
         this.setId("conn"+counter);
         this.x1.bind(x1);
         this.y1.bind(y1);
         this.x2.bind(x2);
         this.y2.bind(y2);
-
+        mainLine.setStrokeWidth(2.);
+        triangle.setStrokeWidth(2.);
         getChildren().addAll(mainLine, triangle);
         triangle.setFill(Color.WHITE);
         triangle.setStroke(Color.BLACK);
@@ -32,7 +34,7 @@ public class Inheritance extends Dependency {
             s.addListener( (l,o,n) -> update() );
         }
         update();
-        doubleClickEvent(controller,data);
+        doubleClickEvent(controller/*,data*/);
         counter++;
     }
 

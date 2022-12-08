@@ -18,34 +18,32 @@ class ClassEntityTest {
     void testSetNodesToVBox() {
         ClassEntity entity = new ClassEntity();
         entity.setNodesToVBox();
-        Assertions.assertEquals(5,entity.getVbox().getChildren().size());
+        Assertions.assertEquals(5,entity.getVBox().getChildren().size());
     }
 
     @Test
     void testInitializeEntityAddedToPane() {
         ClassEntity entity = new ClassEntity();
         Pane pane = new Pane();
-        entity.initializeEntity(new DraggableMaker(),new MainViewController(), Data.getInstance(),pane);
-        Assertions.assertTrue(pane.getChildren().contains(entity.getVbox()));
+        entity.initializeEntity(/*new DraggableMaker(),*/ new MainViewController(),pane);
+        Assertions.assertTrue(pane.getChildren().contains(entity.getVBox()));
     }
     @Test
     void testInitializeEntityAddedDataList() {
         ClassEntity entity = new ClassEntity();
         Data data = Data.getInstance();
-        entity.initializeEntity(new DraggableMaker(),new MainViewController(),Data.getInstance(),new Pane());
-        Assertions.assertTrue(data.entityList.contains(entity));
+        entity.initializeEntity(/*new DraggableMaker(),*/ new MainViewController(),new Pane());
+        Assertions.assertTrue(data.getEntities().contains(entity));
     }
 
     @Test
     void testPickEntity() {
         ClassEntity entity = new ClassEntity();
         MainViewController mainController = new MainViewController();
-        ObjectDetailController controller = new ObjectDetailController();
+        ObjectViewController controller = new ObjectViewController();
         Pane pane = new Pane();
-        entity.initializeEntity(new DraggableMaker(),mainController,
-                Data.getInstance(),pane);
-        entity.pickEntity(Data.getInstance(),controller,
-                entity.getVbox(),"class0");
-        Assertions.assertEquals(Integer.parseInt(entity.getVbox().getId().substring(5)),controller.pickedId);
+        entity.initializeEntity(/*new DraggableMaker(),*/mainController,pane);
+        entity.pickEntity(controller, "class0");
+        Assertions.assertEquals(Integer.parseInt(entity.getVBox().getId().substring(5)),controller.getPickedId());
     }
 }

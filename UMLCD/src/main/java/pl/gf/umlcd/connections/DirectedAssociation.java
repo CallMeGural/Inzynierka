@@ -20,20 +20,22 @@ public class DirectedAssociation extends Association {
     protected final double ARROWHEAD_ANGLE = Math.toRadians(40);
     protected final double ARROWHEAD_LENGTH = 10;
 
-    public DirectedAssociation(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data, MainViewController controller) {
+    public DirectedAssociation(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2/*, Data data*/, MainViewController controller) {
+        data = Data.getInstance();
         this.setId("conn"+counter);
         this.x1.bind(x1);
         this.y1.bind(y1);
         this.x2.bind(x2);
         this.y2.bind(y2);
-
+        mainLine.setStrokeWidth(2.);
+        head.setStrokeWidth(2.);
         getChildren().addAll(mainLine, head);
 
         for(SimpleDoubleProperty s : new SimpleDoubleProperty[]{this.x1,this.y1,this.x2,this.y2}){
             s.addListener( (l,o,n) -> update() );
         }
         update();
-        doubleClickEvent(controller,data);
+        doubleClickEvent(controller/*,data*/);
         counter++;
     }
 
@@ -63,7 +65,7 @@ public class DirectedAssociation extends Association {
         head.getPoints().addAll(x,y);
 
     }
-    @Override
+    /*@Override
     public void singleClickEvent(Data data) {
         data.pickedConnection = this;
         if(!(this.getHead().getStroke() == Color.BLUE))  {
@@ -75,5 +77,5 @@ public class DirectedAssociation extends Association {
             this.getMainLine().setStroke(Color.BLACK);
         }
 
-    }
+    }*/
 }

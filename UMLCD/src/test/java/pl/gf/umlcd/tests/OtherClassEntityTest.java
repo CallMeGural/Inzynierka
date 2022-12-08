@@ -21,6 +21,6 @@ class OtherClassEntityTest {
     void testSetNodesToVBox() {
         OtherClassEntity entity = new OtherClassEntity(new Label(), OtherClassType.ENUM);
         entity.setNodesToVBox();
-        Assertions.assertEquals(6,entity.getVbox().getChildren().size());
+        Assertions.assertEquals(6,entity.getVBox().getChildren().size());
     }
 }

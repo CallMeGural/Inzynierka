@@ -16,6 +16,7 @@
                 <Button fx:id="enuButton" mnemonicParsing="false" onAction="#createNewEnumEntity" prefHeight="50.0" prefWidth="90.0" text="Enum" />
                 <Button fx:id="intButton" mnemonicParsing="false" onAction="#createNewInterfaceEntity" prefHeight="50.0" prefWidth="90.0" text="Interface" />
                 <Button fx:id="assButton" mnemonicParsing="false" onAction="#drawAssociation" prefHeight="50.0" prefWidth="90.0" text="Association" textAlignment="CENTER" />
+            <Button fx:id="selfAssButton" layoutX="10.0" layoutY="160.0" mnemonicParsing="false" onAction="#drawSelfAssociation" prefHeight="50.0" prefWidth="90.0" text="Self Association" textAlignment="CENTER" wrapText="true" />
             <Button fx:id="dirAssButton" layoutX="10.0" layoutY="161.0" mnemonicParsing="false" onAction="#drawDirectedAssociation" prefHeight="50.0" prefWidth="90.0" text="Directed Association" textAlignment="CENTER" wrapText="true" />
                 <Button fx:id="inhButton" mnemonicParsing="false" onAction="#drawInheritance" prefHeight="50.0" prefWidth="90.0" text="Inheritance" textAlignment="CENTER" />
                 <Button fx:id="reaButton" mnemonicParsing="false" onAction="#drawRealization" prefHeight="50.0" prefWidth="90.0" text="Realization" textAlignment="CENTER" />

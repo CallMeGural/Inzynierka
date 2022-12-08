@@ -14,8 +14,6 @@ import pl.gf.umlcd.ConnectionViewController;
 import pl.gf.umlcd.Data;
 import pl.gf.umlcd.MainViewController;
 
-import java.io.IOException;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,25 +24,26 @@ public class Association extends Group {
     protected SimpleDoubleProperty y1 = new SimpleDoubleProperty();
     protected SimpleDoubleProperty x2 = new SimpleDoubleProperty();
     protected SimpleDoubleProperty y2 = new SimpleDoubleProperty();
-
-    protected final double ARROW_SCALER = 20;
+    protected Data data;
+    protected final double ARROW_SCALER = 75.;
     protected static int counter=0;
 
 
-    public Association(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data, MainViewController controller){
+    public Association(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, MainViewController controller){
+        data = Data.getInstance();
         this.setId("conn"+counter);
         this.x1.bind(x1);
         this.y1.bind(y1);
         this.x2.bind(x2);
         this.y2.bind(y2);
-
+        mainLine.setStrokeWidth(2.);
         getChildren().add(mainLine);
 
         for(SimpleDoubleProperty s : new SimpleDoubleProperty[]{this.x1,this.y1,this.x2,this.y2}){
             s.addListener( (l,o,n) -> update() );
         }
         update();
-        doubleClickEvent(controller, data);
+        doubleClickEvent(controller);
         counter++;
         System.out.println(this.getId());
     }
@@ -71,63 +70,64 @@ public class Association extends Group {
         };
     }
 
-    public void doubleClickEvent(MainViewController controller,Data data) {
+    public void doubleClickEvent(MainViewController controller) {
         this.setOnMouseClicked(e -> {
             if(e.getButton().equals(MouseButton.PRIMARY)){
                 System.out.println(e.getClickCount());
                 if(e.getClickCount() == 1)
-                    singleClickEvent(data);
+                    singleClickEvent();
                 else
                     controller.showConnection(e);
             }
         });
     }
 
-    public void singleClickEvent(Data data) {
+    public void singleClickEvent() {
         System.out.println(this.getClass().getSimpleName());
-            data.pickedConnection = this;
-            if(!(this.getMainLine().getStroke() == Color.BLUE))  {
+            if(data.getPickedConnection()!=null) {
+                Association line = data.getPickedConnection();
+                line.getMainLine().setStroke(Color.BLACK);
+            }
+            data.setPickedConnection(this);
+            if(!(this.getMainLine().getStroke() == Color.BLUE))
                 this.getMainLine().setStroke(Color.BLUE);
-            }
-            else {
-                this.getMainLine().setStroke(Color.BLACK);
-            }
     }
 
 
-    public void showConnection(Data data, String id, ConnectionViewController controller) {
+    public void showConnection(String id, ConnectionViewController controller) {
         System.out.println("connection id " +id);
         //odnalezienie odpowiedniego polaczenia w liscie
-        for(int i = 0; i<data.connectedPairs.size(); i++) {
-            if(data.connectedPairs.get(i).getConnection().getId().equals(id)) {
-                controller.connectionId=i;
-                System.out.println(data.connectedPairs.get(i));
+        for(int i = 0; i<data.getConnectedPairs().size(); i++) {
+            if(data.getConnectedPairs().get(i).getConnection().getId().equals(id)) {
+                controller.setConnectionId(i);
+                //controller.connectionId=i;
+                System.out.println(data.getConnectedPairs().get(i));
                 break;
             }
         }
-        controller.data=data;
+        //controller.data=data;
         Label label;
         //Start Node
         //if(data.connectedPairs.get(controller.connectionId).getVBox1().getClass().getSimpleName().equals("ClassEntity")) {
         //if(data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().get(2).getClass().getSimpleName().equals("TextArea")) {
-        if(data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().size() == 5)
-            label = (Label) data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().get(0);
+        if(data.getConnectedPairs().get(controller.getConnectionId()).getVBox1().getChildren().size() == 5)
+            label = (Label) data.getConnectedPairs().get(controller.getConnectionId()).getVBox1().getChildren().get(0);
         else
-            label = (Label) data.connectedPairs.get(controller.connectionId).getVBox1().getChildren().get(1);
-        controller.startNameLabel.setText(label.getText());
+            label = (Label) data.getConnectedPairs().get(controller.getConnectionId()).getVBox1().getChildren().get(1);
+        controller.getStartNameLabel().setText(label.getText());
         //End node
-        if(data.connectedPairs.get(controller.connectionId).getVBox2().getChildren().size() == 5)
-            label = (Label) data.connectedPairs.get(controller.connectionId).getVBox2().getChildren().get(0);
+        if(data.getConnectedPairs().get(controller.getConnectionId()).getVBox2().getChildren().size() == 5)
+            label = (Label) data.getConnectedPairs().get(controller.getConnectionId()).getVBox2().getChildren().get(0);
         else
-            label = (Label) data.connectedPairs.get(controller.connectionId).getVBox2().getChildren().get(1);
-        controller.endNameLabel.setText(label.getText());
+            label = (Label) data.getConnectedPairs().get(controller.getConnectionId()).getVBox2().getChildren().get(1);
+        controller.getEndNameLabel().setText(label.getText());
 
-        controller.typeLabel.setText(data.connectedPairs.get(controller.connectionId).getConnection().getClass().getSimpleName());
+        controller.getTypeLabel().setText(data.getConnectedPairs().get(controller.getConnectionId()).getConnection().getClass().getSimpleName());
 
-        String cardinality1 = data.connectedPairs.get((controller.connectionId)).getCardinality1();
-        String cardinality2 = data.connectedPairs.get((controller.connectionId)).getCardinality2();
+        String cardinality1 = data.getConnectedPairs().get((controller.getConnectionId())).getCardinality1();
+        String cardinality2 = data.getConnectedPairs().get((controller.getConnectionId())).getCardinality2();
 
-        controller.startCombo.setPromptText(cardinality1);
-        controller.endCombo.setPromptText(cardinality2);
+        controller.getStartCombo().setPromptText(cardinality1);
+        controller.getEndCombo().setPromptText(cardinality2);
     }
 }

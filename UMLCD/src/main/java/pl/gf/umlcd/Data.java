@@ -2,7 +2,6 @@ package pl.gf.umlcd;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -14,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
+import pl.gf.umlcd.connections.Association;
 
 import java.io.File;
 import java.io.FileReader;
@@ -26,24 +26,29 @@ import java.nio.file.Paths;
 public final class Data {
 
     private static Data instance;
-    public ObservableList<ClassEntity> entityList = FXCollections.observableArrayList();
-    public ObservableList<ClassEntity> pickedPair = FXCollections.observableArrayList();
-    public ObservableList<ConnectedPair> connectedPairs = FXCollections.observableArrayList();
-    public Group pickedConnection;
+    private ObservableList<ClassEntity> entities;
+    private ObservableList<ClassEntity> pickedPair;
+    private ObservableList<ConnectedPair> connectedPairs;
+    private Association pickedConnection;
+    private Label label;
+    private TextArea textArea;
+    private int classCounter;
+    private int connectionCounter;
 
-    //public Data() {}
-
-    private Data() {}
-
+    private Data() {
+        entities = FXCollections.observableArrayList();
+        pickedPair = FXCollections.observableArrayList();
+        connectedPairs = FXCollections.observableArrayList();
+        label = new Label();
+        textArea = new TextArea();
+        pickedConnection = new Association();
+        classCounter=0;
+        connectionCounter=0;
+    }
     public static Data getInstance() {
         if(instance == null) instance = new Data();
         return instance;
     }
-
-    private Label label;
-    private TextArea textArea;
-    private int classCounter = 0;
-    private int connectionCounter = 0;
 
     public String setFileName() {
         TextInputDialog dialog = new TextInputDialog("file");
@@ -53,7 +58,7 @@ public final class Data {
         return dialog.showAndWait().orElseThrow();
     }
 
-    public void saveClassEntity(VBox vBox, Ini ini) {
+    private void saveClassEntity(VBox vBox, Ini ini) {
         ini.put("class"+classCounter,"id",vBox.getId());
 
         label = (Label) vBox.getChildren().get(0); //name
@@ -70,7 +75,7 @@ public final class Data {
         classCounter++;
     }
 
-    public void saveOtherClassEntity(VBox vBox, Ini ini) {
+    private void saveOtherClassEntity(VBox vBox, Ini ini) {
         ini.put("class"+classCounter,"id",vBox.getId());
 
         label = (Label) vBox.getChildren().get(0); //type
@@ -95,7 +100,7 @@ public final class Data {
         classCounter++;
     }
 
-    public void saveConnection(ConnectedPair pair, Ini ini) {
+    private void saveConnection(ConnectedPair pair, Ini ini) {
         ini.put("connection" + connectionCounter, "start", pair.getVBox1().getId());
         ini.put("connection" + connectionCounter, "end", pair.getVBox2().getId());
         ini.put("connection" + connectionCounter, "type", pair.getConnection().getClass().getSimpleName());
@@ -104,34 +109,36 @@ public final class Data {
         connectionCounter++;
     }
 
-    public void save(MainViewController controller) {
+    public void save() {
         classCounter=0;
         connectionCounter=0;
         VBox vBox;
         String filename = setFileName() + ".ini";
-        Path path = Paths.get("src/main/resources/"+filename);
+        Path path = Paths.get("\\"+filename);
         try {
             Files.createFile(path);
             File file = new File(String.valueOf(path));
             Wini ini = new Wini(file);
 
-            for (int i=0;i<controller.data.entityList.size();i++) {
-                vBox = controller.data.entityList.get(i).getVbox();
+            for (ClassEntity classEntity : entities) {
+                vBox = classEntity.getVBox();
                 if (vBox.getChildren().size() == 5)  //ClassEntity
                     saveClassEntity(vBox, ini);
                 else //OtherClassEntity
                     saveOtherClassEntity(vBox, ini);
                 //classCounter++;
             }
-            for (ConnectedPair pair : controller.data.connectedPairs) {
-                saveConnection(pair, ini);
+//            for (ConnectedPair pair : controller.data.connectedPairs) {
+//                saveConnection(pair, ini);
+                for (ConnectedPair pair : connectedPairs) {
+                    saveConnection(pair, ini);
                 //connectionCounter++;
             }
             ini.put("config", "classCounter", classCounter);
             ini.put("config", "connectionCounter", connectionCounter);
             ini.store();
         } catch (IOException exception) {
-            saveFileIOException();
+            saveFileIO();
         }
     }
 
@@ -142,8 +149,8 @@ public final class Data {
 
         entity.getName().setText(section.get("name"));
 
-        entity.getVbox().setLayoutX(Double.parseDouble(section.get("layoutX")));
-        entity.getVbox().setLayoutY(Double.parseDouble(section.get("layoutY")));
+        entity.getVBox().setLayoutX(Double.parseDouble(section.get("layoutX")));
+        entity.getVBox().setLayoutY(Double.parseDouble(section.get("layoutY")));
         controller.createNewClassEntity(entity);
     }
 
@@ -154,8 +161,8 @@ public final class Data {
         otherEntity.getName().setText(section.get("name"));
         otherEntity.getTitle().setText(section.get("type"));
 
-        otherEntity.getVbox().setLayoutX(Double.parseDouble(section.get("layoutX")));
-        otherEntity.getVbox().setLayoutY(Double.parseDouble(section.get("layoutY")));
+        otherEntity.getVBox().setLayoutX(Double.parseDouble(section.get("layoutX")));
+        otherEntity.getVBox().setLayoutY(Double.parseDouble(section.get("layoutY")));
         switch (section.get("type")) {
             case "<<enum>>" -> controller.createNewEnumEntity(otherEntity);
             //case "<<primitive>>" -> controller.createNewPrimitiveEntity(otherEntity);
@@ -164,7 +171,7 @@ public final class Data {
     }
 
     private void loadConnection(int i, Ini ini, MainViewController controller) {
-        String path = "";
+        //String path = "";
         Ini.Section section = ini.get("connection"+i);
         switch (section.get("type")) {
             case "Aggregation" ->
@@ -175,6 +182,9 @@ public final class Data {
                             section.get("startCardinality"),section.get("endCardinality"));
             case "DirectedAssociation" ->
                     controller.drawDirectedAssociation(section.get("start"),section.get("end"),
+                            section.get("startCardinality"),section.get("endCardinality"));
+            case "SelfAssociation" ->
+                    controller.drawSelfAssociation(section.get("start"),section.get("end"),
                             section.get("startCardinality"),section.get("endCardinality"));
             case "Composition" ->
                     controller.drawComposition(section.get("start"),section.get("end"),
@@ -188,21 +198,21 @@ public final class Data {
             case "Realization" ->
                     controller.drawRealization(section.get("start"),section.get("end"),
                             section.get("startCardinality"),section.get("endCardinality"));
-            default -> differentConnectionClassException();
+            default -> wrongConnectionType();
         }
     }
 
-    public void load(MainViewController controller, Data data) {
+    public void load(MainViewController controller) {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Ini file (*.ini)","*.ini");
         fileChooser.getExtensionFilters().add(filter);
         File file = fileChooser.showOpenDialog(new Stage());
 
         if(file!=null) {
-            data.pickedPair.clear();
-            data.entityList.clear();
-            data.connectedPairs.clear();
-            controller.pane.getChildren().clear();
+            pickedPair.clear();
+            entities.clear();
+            connectedPairs.clear();
+            controller.getPane().getChildren().clear();
             OtherClassEntity.counter=0;
 
             Ini ini = new Ini();
@@ -213,7 +223,7 @@ public final class Data {
                 classCounter = Integer.parseInt(section.get("classCounter"));
                 connectionCounter = Integer.parseInt(section.get("connectionCounter"));
             } catch (IOException exception) {
-                fileNotFoundException();
+                fileNotFound();
             }
             for(int i=0;i<classCounter;i++) {
                 section = ini.get("class"+i);
@@ -224,30 +234,30 @@ public final class Data {
                 loadConnection(i,ini,controller);
             }
         }
-        else fileNotPickedException();
+        else fileNotPicked();
     }
 
-    private void saveFileIOException() {
+    private void saveFileIO() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("File error");
         alert.setHeaderText("Could not save the file");
         alert.setContentText("File was not created or data has not been stored");
         alert.showAndWait();
     }
-    private void fileNotFoundException() {
+    private void fileNotFound() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("File error");
         alert.setHeaderText("Could not read the file");
         alert.setContentText("File was not found, could not read the data");
         alert.showAndWait();
     }
-    private void differentConnectionClassException() {
+    private void wrongConnectionType() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("File error");
         alert.setHeaderText("Wrong Connection Class name");
         alert.setContentText("Connection class name could not be read properly");
     }
-    private void fileNotPickedException() {
+    private void fileNotPicked() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("File error");
         alert.setHeaderText("No file to be opened");
