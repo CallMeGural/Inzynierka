@@ -17,38 +17,42 @@ import java.util.Locale;
 @Setter
 public class OtherClassEntity extends ClassEntity {
     private Label title;
-    OtherClassType type;
+    private OtherClassType type;
 
     public OtherClassEntity(Label title) {
-        this.vbox = new VBox();
+        draggableMaker = DraggableMaker.getInstance();
+        data = Data.getInstance();
+        this.vBox = new VBox();
         this.name = new Label("Class Name");
         this.variablesLab = new Label("Variables");
         this.methodsLab = new Label("Methods");
         this.vars = new TextArea();
         this.meths = new TextArea();
 
-        vbox.setId("other"+counter);
-        vbox.setPrefSize(WIDTH,HEIGHT);
-        vbox.setStyle("-fx-border-style: solid");
-        System.out.println(vbox.getId());
+        vBox.setId("other"+counter);
+        vBox.setPrefSize(WIDTH,HEIGHT);
+        vBox.setStyle("-fx-border-style: solid");
+        System.out.println(vBox.getId());
         counter++;
         this.title=title;
         System.out.println("Tworze obiekt OtherClassEntity");
     }
 
     public OtherClassEntity(Label title, OtherClassType type) {
+        draggableMaker = DraggableMaker.getInstance();
+        data = Data.getInstance();
         //super();
-        this.vbox = new VBox();
+        this.vBox = new VBox();
         this.name = new Label("Class Name");
         this.variablesLab = new Label("Variables");
         this.methodsLab = new Label("Methods");
         this.vars = new TextArea();
         this.meths = new TextArea();
 
-        vbox.setId("other"+counter);
-        vbox.setPrefSize(WIDTH,HEIGHT);
-        vbox.setStyle("-fx-border-style: solid");
-        System.out.println(vbox.getId());
+        vBox.setId("other"+counter);
+        vBox.setPrefSize(WIDTH,HEIGHT);
+        vBox.setStyle("-fx-border-style: solid");
+        System.out.println(vBox.getId());
         counter++;
         this.type=type;
         this.title = title;
@@ -57,28 +61,33 @@ public class OtherClassEntity extends ClassEntity {
 
     @Override
     public void setNodesToVBox() {
-        vbox.getChildren().addAll(title, name, variablesLab, vars, methodsLab, meths);
-        System.out.println("VBox " + vbox.getId() + " prepared");
-        vbox.setAlignment(Pos.CENTER);
+        vBox.getChildren().addAll(title, name, variablesLab, vars, methodsLab, meths);
+        System.out.println("VBox " + vBox.getId() + " prepared");
+        vBox.setAlignment(Pos.CENTER);
     }
 
     @Override
-    public void doubleClickEvent (MainViewController controller, Data data) {
-        vbox.setOnMouseClicked(e -> {
+    public void doubleClickEvent (MainViewController controller/*, Data data*/) {
+        vBox.setOnMouseClicked(e -> {
             if(e.getButton().equals(MouseButton.PRIMARY)){
                 if(e.getClickCount() == 2) controller.showOtherEntity(e);
-                else singleClickEvent(data);
+                else singleClickEvent(/*data*/);
             }
         });
     }
 
     @Override
-    public void setChildren(Data data, ObjectDetailController controller) {
-        Label label = (Label) data.entityList.get(controller.pickedId).getVbox().getChildren().get(1);
-        data.entityList.get(controller.pickedId).getVbox().getChildren().remove(1);
-        controller.vBox.getChildren().add(data.entityList.get(controller.pickedId).getVbox().getChildren().get(0));
-        controller.vBox.getChildren().add(new TextField(label.getText()));
-        controller.vBox.getChildren().addAll(data.entityList.get(controller.pickedId).getVbox().getChildren());
+    public void setChildren(/*Data data, */ObjectViewController controller) {
+//        Label label = (Label) data.entityList.get(controller.pickedId).getVbox().getChildren().get(1);
+//        data.entityList.get(controller.pickedId).getVbox().getChildren().remove(1);
+//        controller.vBox.getChildren().add(data.entityList.get(controller.pickedId).getVbox().getChildren().get(0));
+//        controller.vBox.getChildren().add(new TextField(label.getText()));
+//        controller.vBox.getChildren().addAll(data.entityList.get(controller.pickedId).getVbox().getChildren());
+        Label label = (Label) data.getEntities().get(controller.getPickedId()).getVBox().getChildren().get(1);
+        data.getEntities().get(controller.getPickedId()).getVBox().getChildren().remove(1);
+        controller.getVBox().getChildren().add(data.getEntities().get(controller.getPickedId()).getVBox().getChildren().get(0));
+        controller.getVBox().getChildren().add(new TextField(label.getText()));
+        controller.getVBox().getChildren().addAll(data.getEntities().get(controller.getPickedId()).getVBox().getChildren());
 
     }
 }

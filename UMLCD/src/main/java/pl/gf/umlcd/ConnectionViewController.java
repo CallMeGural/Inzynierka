@@ -7,28 +7,29 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import java.io.IOException;
+import lombok.Getter;
+import lombok.Setter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@Getter
+@Setter
 public class ConnectionViewController implements Initializable {
 
     @FXML
-    public Label startNameLabel, endNameLabel, typeLabel;
+    private Label startNameLabel, endNameLabel, typeLabel;
     @FXML
-    public ComboBox<String> startCombo, endCombo;
+    private ComboBox<String> startCombo, endCombo;
     @FXML
-    Button saveButton;
+    private Button saveButton;
     @FXML
-    AnchorPane pane;
+    private AnchorPane pane;
 
-    String[] cardinalities;
-    public Data data;
-    public int connectionId;
+    private String[] cardinalities;
+    private Data data;
+    private int connectionId;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -40,14 +41,14 @@ public class ConnectionViewController implements Initializable {
 
     public void saveAndExit(){
         if(startCombo.getValue() == null)
-            data.connectedPairs.get(connectionId).setCardinality1(startCombo.getPromptText());
+            data.getConnectedPairs().get(connectionId).setCardinality1(startCombo.getPromptText());
         else
-            data.connectedPairs.get(connectionId).setCardinality1(startCombo.getValue());
+            data.getConnectedPairs().get(connectionId).setCardinality1(startCombo.getValue());
 
         if (endCombo.getValue() == null)
-            data.connectedPairs.get(connectionId).setCardinality2(endCombo.getPromptText());
+            data.getConnectedPairs().get(connectionId).setCardinality2(endCombo.getPromptText());
         else
-            data.connectedPairs.get(connectionId).setCardinality2(endCombo.getValue());
+            data.getConnectedPairs().get(connectionId).setCardinality2(endCombo.getValue());
 
         Stage stage = (Stage) pane.getScene().getWindow();
         stage.close();

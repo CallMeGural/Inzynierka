@@ -7,7 +7,7 @@ public class WrongAssociationException extends Exception{
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Aggregation connection warning");
         alert.setHeaderText("Cannot create connection");
-        alert.setContentText("Association can appear only between class and class or class and enum.");
+        alert.setContentText("Association can appear only between class and class."/* or class and enum."*/);
         alert.showAndWait();
     }
 }

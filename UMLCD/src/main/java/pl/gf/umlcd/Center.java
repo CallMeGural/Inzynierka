@@ -1,19 +1,20 @@
 package pl.gf.umlcd;
 
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.layout.VBox;
+import lombok.Getter;
 
+@Getter
 public class Center {
     private ReadOnlyDoubleWrapper centerX = new ReadOnlyDoubleWrapper();
     private ReadOnlyDoubleWrapper centerY = new ReadOnlyDoubleWrapper();
 
-    public Center(Node node) {
-        calcCenter(node.getBoundsInParent());
-        node.boundsInParentProperty().addListener(
+    //bounds - rozmiar i polozenie
+    public Center(VBox vb) {
+        calcCenter(vb.getBoundsInParent());
+        vb.boundsInParentProperty().addListener(
                 (observableValue, oldBounds, bounds) -> calcCenter(bounds));
     }
 
@@ -23,11 +24,5 @@ public class Center {
         centerY.set(bounds.getMinY() + bounds.getHeight() / 2);
     }
 
-    ReadOnlyDoubleProperty centerXProperty() {
-        return centerX.getReadOnlyProperty();
-    }
 
-    ReadOnlyDoubleProperty centerYProperty() {
-        return centerY.getReadOnlyProperty();
-    }
 }

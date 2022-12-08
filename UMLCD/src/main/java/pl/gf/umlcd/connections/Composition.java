@@ -13,8 +13,8 @@ import pl.gf.umlcd.MainViewController;
 @Setter
 public class Composition extends Aggregation {
 
-    public Composition(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2, Data data, MainViewController controller){
-        super(x1,y1,x2,y2,data,controller);
+    public Composition(ReadOnlyDoubleProperty x1, ReadOnlyDoubleProperty y1, ReadOnlyDoubleProperty x2, ReadOnlyDoubleProperty y2/*, Data data*/, MainViewController controller){
+        super(x1,y1,x2,y2/*,data*/,controller);
         diamond.setFill(Color.BLACK);
     }
 
