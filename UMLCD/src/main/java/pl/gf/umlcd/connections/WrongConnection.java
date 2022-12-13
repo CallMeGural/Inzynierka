@@ -30,30 +30,17 @@ public class WrongConnection {
         }
     }
 
-    public void associationBetweenEnumAndOther(ClassEntity start, ClassEntity end) throws WrongEnumConnectionException {
-        if(start.getClass().getSimpleName().equals("OtherClassEntity")) {
-            Label label = (Label) start.getVBox().getChildren().get(0);
-            if(label.getText().equals("<<enum>>") && end.getClass().getSimpleName().equals("OtherClassEntity"))
-                //enum and nonClass
-                throw new WrongEnumConnectionException();
-        }
-        if(end.getClass().getSimpleName().equals("OtherClassEntity")) {
-            Label label = (Label) end.getVBox().getChildren().get(0);
-            if(label.getText().equals("<<enum>>") && start.getClass().getSimpleName().equals("OtherClassEntity"))
-                //nonClass and enum
-                throw new WrongEnumConnectionException();
-        }
-    }
-
     public void wrongDirectedAssociationFlow(ClassEntity start, ClassEntity end) throws WrongDirectedAssociationException {
+        Label label;
         if(start.getClass().getSimpleName().equals("OtherClassEntity")) {
-            throw new WrongDirectedAssociationException();
+            label = (Label) start.getVBox().getChildren().get(0);
+            if(label.getText().equals("<<enum>>"))
+                throw new WrongDirectedAssociationException();
         }
         if(start.getClass().getSimpleName().equals("ClassEntity") && end.getClass().getSimpleName().equals("OtherClassEntity")) {
-            Label label = (Label) end.getVBox().getChildren().get(0);
+             label = (Label) end.getVBox().getChildren().get(0);
             if(!label.getText().equals("<<enum>>")) throw new WrongDirectedAssociationException();
         }
-
     }
 
     public void dependencyBetweenNonClasses(ClassEntity start, ClassEntity end) throws WrongDependencyException {
@@ -96,5 +83,15 @@ public class WrongConnection {
 
     public void theSameNodesConnected(ClassEntity start, ClassEntity end) throws TheSameNodesConnectionException {
         if(start == end) throw new TheSameNodesConnectionException();
+    }
+
+    public void wrongAggregationOrComposition(ClassEntity start, ClassEntity end) throws WrongDirectedAssociationException {
+        Label label;
+        if(end.getClass().getSimpleName().equals("OtherClassEntity")) {
+            label = (Label) end.getVBox().getChildren().get(0);
+            if(!label.getText().equals("<<interface>>")) throw new WrongDirectedAssociationException();
+        }
+        if(start.getClass().getSimpleName().equals("OtherClassEntity"))
+            throw new WrongDirectedAssociationException();
     }
 }

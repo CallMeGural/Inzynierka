@@ -22,7 +22,7 @@ public class ClassEntity {
     protected DraggableMaker draggableMaker;
     protected static int counter = 0;
     protected final double WIDTH = 150.;
-    protected final double HEIGHT = 200.;
+    protected final double HEIGHT = 150.;
 
     public ClassEntity() {
         this.vBox = new VBox();

@@ -1,6 +1,8 @@
 package pl.gf.umlcd;
 
 import javafx.scene.control.Alert;
+import javafx.scene.input.MouseButton;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,10 +57,14 @@ public class MainViewController implements Initializable {
                     pane.getChildren().remove(entity.getVBox());
                     data.getEntities().remove(entity);
                 }
-                pane.getChildren().remove(data.getPickedConnection());
+                if(data.getPickedConnection().size()>0)
+                    pane.getChildren().remove(
+                            data.getPickedConnection().get(0));
             }
         });
+
     }
+
 
     /*
             MENU OPTIONS
@@ -97,7 +103,6 @@ public class MainViewController implements Initializable {
         data.save();
     }
     public void loadFile(ActionEvent e) {
-
         data.load(this);
     }
 
@@ -264,7 +269,6 @@ public class MainViewController implements Initializable {
             exception2.showMessage();
         }
     }
-
     public void drawSelfAssociation(String vbox1, String vbox2, String startCardinality, String endCardinality) {
         VBox vb1 = getVBox(vbox1);
         VBox vb2 = getVBox(vbox2);
@@ -321,7 +325,7 @@ public class MainViewController implements Initializable {
 
         Center startCenter = new Center(vb1);
         Center endCenter = new Center(vb2);
-        Association association = new Association(
+        DirectedAssociation association = new DirectedAssociation(
                 startCenter.getCenterX(),
                 startCenter.getCenterY(),
                 endCenter.getCenterX(),
@@ -465,10 +469,7 @@ public class MainViewController implements Initializable {
             Center endCenter = new Center(data.getPickedPair().get(1).getVBox());
 
             wrongConnection.theSameNodesConnected(data.getPickedPair().get(0),data.getPickedPair().get(1));
-            wrongConnection.associationBetweenOtherTypes(data.getPickedPair().get(0),data.getPickedPair().get(1));
-            //wrongConnection.associationBetweenEnumAndOther(data.getPickedPair().get(0),data.getPickedPair().get(1));
-            //wrongConnection.wrongDirectedAssociationFlow(data.getPickedPair().get(0),data.getPickedPair().get(1));
-
+            wrongConnection.wrongAggregationOrComposition(data.getPickedPair().get(0),data.getPickedPair().get(1));
 
             Aggregation aggregation = new Aggregation(
                     startCenter.getCenterX(),
@@ -484,12 +485,8 @@ public class MainViewController implements Initializable {
         }
         catch (IndexOutOfBoundsException exception1) {
             connectionError();
-        /*} catch (WrongEnumConnectionException exception2) {
-            exception2.showMessage();*/
-        } catch (WrongAssociationException exception3) {
+        } catch (WrongDirectedAssociationException exception3) {
             exception3.showMessage();
-        /*} catch (WrongDirectedAssociationException exception4) {
-            exception4.showMessage();*/
         } catch (TheSameNodesConnectionException exception5) {
             exception5.showMessage();
         }
@@ -517,9 +514,7 @@ public class MainViewController implements Initializable {
             Center endCenter = new Center(data.getPickedPair().get(1).getVBox());
 
             wrongConnection.theSameNodesConnected(data.getPickedPair().get(0),data.getPickedPair().get(1));
-            wrongConnection.associationBetweenOtherTypes(data.getPickedPair().get(0),data.getPickedPair().get(1));
-            //wrongConnection.associationBetweenEnumAndOther(data.getPickedPair().get(0),data.getPickedPair().get(1));
-            //wrongConnection.wrongDirectedAssociationFlow(data.getPickedPair().get(0),data.getPickedPair().get(1));
+            wrongConnection.wrongAggregationOrComposition(data.getPickedPair().get(0),data.getPickedPair().get(1));
 
             Composition composition = new Composition(
                     startCenter.getCenterX(),
@@ -534,12 +529,8 @@ public class MainViewController implements Initializable {
                     composition));
         } catch (IndexOutOfBoundsException exception1) {
             connectionError();
-        /*} catch (WrongEnumConnectionException exception2) {
-            exception2.showMessage();*/
-        } catch (WrongAssociationException exception3) {
+        } catch (WrongDirectedAssociationException exception3) {
             exception3.showMessage();
-        /*} catch (WrongDirectedAssociationException exception4) {
-            exception4.showMessage();*/
         } catch (TheSameNodesConnectionException exception5) {
             exception5.showMessage();
         }

@@ -83,14 +83,36 @@ public class Association extends Group {
     }
 
     public void singleClickEvent() {
-        System.out.println(this.getClass().getSimpleName());
-            if(data.getPickedConnection()!=null) {
-                Association line = data.getPickedConnection();
-                line.getMainLine().setStroke(Color.BLACK);
+        data.getPickedConnection().add(this);
+        this.getMainLine().setStroke(Color.BLUE);
+        if(data.getPickedConnection().size()>1) {
+            for(Association connection : data.getPickedConnection()) {
+                connection.getMainLine().setStroke(Color.BLACK);
             }
-            data.setPickedConnection(this);
-            if(!(this.getMainLine().getStroke() == Color.BLUE))
-                this.getMainLine().setStroke(Color.BLUE);
+            data.getPickedConnection().clear();
+        }
+        System.out.println(data.getPickedConnection());
+        /*System.out.println(this.getClass().getSimpleName());
+            //if(data.getPickedConnection()!=null) {
+                //Association line = data.getPickedConnection();
+        if(data.getPickedConnection().size()!=0)
+            Association line = data.getPickedConnection().get(0);
+                //if(line.getMainLine().getStroke() == Color.BLUE)
+                //    line.getMainLine().setStroke(Color.BLACK);
+
+            //}
+            data.getPickedConnection().add(this);
+            if(this == line) {
+                this.getMainLine().setStroke(Color.BLACK);
+                data.getPickedConnection().clear();
+                //data.setPickedConnection();
+            }
+            else {
+                //if (!(this.getMainLine().getStroke() == Color.BLUE))
+                    this.getMainLine().setStroke(Color.BLUE);
+                    line.getMainLine().setStroke(Color.BLACK);
+                //else this.getMainLine().setStroke(Color.BLACK);
+            }*/
     }
 
 

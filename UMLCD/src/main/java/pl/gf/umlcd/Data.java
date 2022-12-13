@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
+import org.w3c.dom.Text;
 import pl.gf.umlcd.connections.Association;
 
 import java.io.File;
@@ -21,6 +22,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+
 @Getter
 @Setter
 public final class Data {
@@ -29,7 +32,7 @@ public final class Data {
     private ObservableList<ClassEntity> entities;
     private ObservableList<ClassEntity> pickedPair;
     private ObservableList<ConnectedPair> connectedPairs;
-    private Association pickedConnection;
+    private ObservableList<Association>/*Association*/ pickedConnection;
     private Label label;
     private TextArea textArea;
     private int classCounter;
@@ -41,7 +44,7 @@ public final class Data {
         connectedPairs = FXCollections.observableArrayList();
         label = new Label();
         textArea = new TextArea();
-        pickedConnection = new Association();
+        pickedConnection = FXCollections.observableArrayList();//new Association();
         classCounter=0;
         connectionCounter=0;
     }
@@ -59,6 +62,7 @@ public final class Data {
     }
 
     private void saveClassEntity(VBox vBox, Ini ini) {
+        TextArea temp = new TextArea();
         ini.put("class"+classCounter,"id",vBox.getId());
 
         label = (Label) vBox.getChildren().get(0); //name
@@ -68,14 +72,20 @@ public final class Data {
         ini.put("class" + classCounter, "layoutY", vBox.getLayoutY());
 
         textArea = (TextArea) vBox.getChildren().get(2); //vars
-        ini.put("class" + classCounter, "vars", textArea.getText());
+        temp.setText(textArea.getText());
+        temp.setText(temp.getText().replace('\n','`'));
+        ini.put("class" + classCounter, "vars", temp.getText());
 
-        textArea = (TextArea) vBox.getChildren().get(4); //vars
-        ini.put("class" + classCounter, "vars", textArea.getText());
+        textArea = (TextArea) vBox.getChildren().get(4); //,methods
+        temp.setText(textArea.getText());
+        temp.setText(temp.getText().replace('\n','`'));
+        ini.put("class" + classCounter, "meths", temp.getText());
+
         classCounter++;
     }
 
     private void saveOtherClassEntity(VBox vBox, Ini ini) {
+        TextArea temp = new TextArea();
         ini.put("class"+classCounter,"id",vBox.getId());
 
         label = (Label) vBox.getChildren().get(0); //type
@@ -91,12 +101,14 @@ public final class Data {
         ini.put("class" + classCounter, "layoutY", vBox.getLayoutY());
 
         textArea = (TextArea) vBox.getChildren().get(3); //vars
-        //ini.put("other" + otherCounter, "vars", textArea.getText());
-        ini.put("class" + classCounter, "vars", textArea.getText());
+        temp.setText(textArea.getText());
+        temp.setText(temp.getText().replace('\n','`'));
+        ini.put("class" + classCounter, "vars", temp.getText());
 
         textArea = (TextArea) vBox.getChildren().get(5); //methods
-        //ini.put("other" + otherCounter, "meths", textArea.getText());
-        ini.put("class" + classCounter, "meths", textArea.getText());
+        temp.setText(textArea.getText());
+        temp.setText(temp.getText().replace('\n','`'));
+        ini.put("class" + classCounter, "vars", temp.getText());
         classCounter++;
     }
 
@@ -145,7 +157,10 @@ public final class Data {
     private void loadClassEntity(Ini.Section section, ClassEntity entity, MainViewController controller) {
         //Ini.Section section = ini.get("class"+i);
         entity.getMeths().setText(section.get("meths"));
+        if(entity.getMeths().getText()!=null) entity.getMeths().setText(entity.getMeths().getText().replace('`','\n'));
+
         entity.getVars().setText(section.get("vars"));
+        if(entity.getVars().getText()!=null) entity.getVars().setText(entity.getVars().getText().replace('`','\n'));
 
         entity.getName().setText(section.get("name"));
 
@@ -156,7 +171,10 @@ public final class Data {
 
     private void loadOtherClassEntity(Ini.Section section, OtherClassEntity otherEntity, MainViewController controller) {
         otherEntity.getMeths().setText(section.get("meths"));
+        if(otherEntity.getMeths().getText()!=null) otherEntity.getMeths().setText(otherEntity.getMeths().getText().replace('`','\n'));
+
         otherEntity.getVars().setText(section.get("vars"));
+        if(otherEntity.getVars().getText()!=null) otherEntity.getVars().setText(otherEntity.getVars().getText().replace('`','\n'));
 
         otherEntity.getName().setText(section.get("name"));
         otherEntity.getTitle().setText(section.get("type"));
@@ -223,6 +241,7 @@ public final class Data {
                 classCounter = Integer.parseInt(section.get("classCounter"));
                 connectionCounter = Integer.parseInt(section.get("connectionCounter"));
             } catch (IOException exception) {
+                System.out.println(exception.getMessage());
                 fileNotFound();
             }
             for(int i=0;i<classCounter;i++) {
